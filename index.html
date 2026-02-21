@@ -35,6 +35,7 @@
     --bg: #0a0a0f; --bg2: #111118; --bg3: #1a1a24; --card: #14141e;
     --border: #252535; --accent: #c9a84c; --accent2: #e8c96a;
     --green: #4caf82; --red: #e05252; --blue: #4c7dcf; --purple: #8b5cf6;
+    --orange: #e0873a;
     --text: #e8e8f0; --text2: #9090a8; --text3: #60607a;
     --radius: 12px; --radius-sm: 8px;
     --font: 'Inter', system-ui, sans-serif;
@@ -62,6 +63,7 @@
   .nav-item.active { background: rgba(201,168,76,0.1); color: var(--accent); border-color: rgba(201,168,76,0.2); }
   .nav-item .icon { font-size: 15px; width: 18px; text-align: center; }
   .nav-badge { margin-left: auto; background: var(--accent); color: #000; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; font-family: var(--mono); }
+  .nav-badge.red { background: var(--red); color: #fff; }
   .sidebar-footer { padding: 14px 20px; border-top: 1px solid var(--border); }
   .sidebar-footer .sf-label { font-size: 9px; color: var(--text3); font-family: var(--mono); letter-spacing: 1.5px; text-transform: uppercase; }
   .sidebar-footer .sf-value { font-size: 22px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; line-height: 1.2; }
@@ -86,6 +88,7 @@
   .btn-danger { background: rgba(224,82,82,0.12); color: var(--red); border: 1px solid rgba(224,82,82,0.25); }
   .btn-danger:hover:not(:disabled) { background: rgba(224,82,82,0.22); }
   .btn-sm { padding: 5px 11px; font-size: 12px; }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
   /* KPI */
   .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
@@ -97,9 +100,10 @@
   .kpi-card.red::before { background: linear-gradient(90deg, var(--red), transparent); }
   .kpi-card.blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
   .kpi-card.purple::before { background: linear-gradient(90deg, var(--purple), transparent); }
+  .kpi-card.orange::before { background: linear-gradient(90deg, var(--orange), transparent); }
   .kpi-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); font-family: var(--mono); margin-bottom: 10px; }
   .kpi-value { font-size: 24px; font-weight: 800; line-height: 1; margin-bottom: 6px; letter-spacing: -1px; }
-  .kpi-value.gold { color: var(--accent); } .kpi-value.green { color: var(--green); } .kpi-value.red { color: var(--red); } .kpi-value.purple { color: var(--purple); }
+  .kpi-value.gold { color: var(--accent); } .kpi-value.green { color: var(--green); } .kpi-value.red { color: var(--red); } .kpi-value.purple { color: var(--purple); } .kpi-value.orange { color: var(--orange); }
   .kpi-sub { font-size: 11px; color: var(--text3); font-family: var(--mono); }
   .kpi-icon { position: absolute; right: 14px; top: 14px; font-size: 24px; opacity: 0.1; }
 
@@ -126,9 +130,14 @@
   .s-consegnato { background: rgba(76,175,130,0.12); color: var(--green); }
   .s-annullato { background: rgba(224,82,82,0.12); color: var(--red); }
 
-  .amount-pos { color: var(--green); font-family: var(--mono); font-weight: 600; font-size: 13px; }
-  .amount-neg { color: var(--red); font-family: var(--mono); font-weight: 600; font-size: 13px; }
-  .amount-neutral { color: var(--text2); font-family: var(--mono); font-size: 13px; }
+  /* STOCK STATUS */
+  .stock-ok    { color: var(--green); }
+  .stock-low   { color: var(--accent); }
+  .stock-empty { color: var(--red); }
+
+  .amount-pos { color: var(--green); font-family: var(--mono); font-weight: 600; }
+  .amount-neg { color: var(--red); font-family: var(--mono); font-weight: 600; }
+  .amount-neutral { color: var(--text2); font-family: var(--mono); }
   .mono { font-family: var(--mono); }
   .action-btns { display: flex; gap: 5px; }
 
@@ -152,34 +161,59 @@
   .form-textarea { resize: vertical; min-height: 72px; }
   .form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
 
-  /* Input con unità */
   .input-unit-wrap { position: relative; }
   .input-unit-wrap .form-input { padding-right: 42px; }
   .input-unit { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--text3); font-family: var(--mono); pointer-events: none; }
 
-  /* Margine preview */
+  /* Margin preview */
   .margin-preview { grid-column: 1/-1; background: rgba(76,175,130,0.07); border: 1px solid rgba(76,175,130,0.2); border-radius: var(--radius-sm); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
   .margin-preview.loss { background: rgba(224,82,82,0.07); border-color: rgba(224,82,82,0.2); }
-  .margin-preview-left { display: flex; flex-direction: column; gap: 3px; }
   .margin-preview-label { font-size: 10px; color: var(--text3); font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; }
-  .margin-preview-detail { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+  .margin-preview-detail { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-top: 2px; }
   .margin-preview-value { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
   .margin-preview-value.pos { color: var(--green); } .margin-preview-value.neg { color: var(--red); }
+
+  /* Stock warning in form */
+  .stock-warning { grid-column: 1/-1; border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; font-family: var(--mono); }
+  .stock-warning.ok  { background: rgba(76,175,130,0.07); border: 1px solid rgba(76,175,130,0.2); color: var(--green); }
+  .stock-warning.low { background: rgba(224,82,82,0.07); border: 1px solid rgba(224,82,82,0.2); color: var(--red); }
+
+  /* MAGAZZINO product cards */
+  .mag-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .mag-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; position: relative; transition: border-color 0.2s; }
+  .mag-card:hover { border-color: rgba(201,168,76,0.3); }
+  .mag-card.low { border-color: rgba(201,168,76,0.4); }
+  .mag-card.empty { border-color: rgba(224,82,82,0.4); }
+  .mag-card-name { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; letter-spacing: -0.3px; }
+  .mag-card-badge { position: absolute; top: 16px; right: 16px; }
+  .mag-card-stock { font-size: 28px; font-weight: 800; letter-spacing: -1px; margin: 10px 0 4px; }
+  .mag-card-stock.ok    { color: var(--green); }
+  .mag-card-stock.low   { color: var(--accent); }
+  .mag-card-stock.empty { color: var(--red); }
+  .mag-card-meta { display: flex; gap: 16px; margin-top: 10px; }
+  .mag-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .mag-meta-label { font-size: 9px; color: var(--text3); font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; }
+  .mag-meta-value { font-size: 13px; font-weight: 600; font-family: var(--mono); color: var(--text); }
+  .mag-card-actions { display: flex; gap: 6px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+  /* Progress bar stock */
+  .stock-bar-track { height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+  .stock-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
 
   /* SECTION TITLE */
   .section-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
   .section-title span { font-size: 10px; color: var(--text3); font-family: var(--mono); font-weight: 400; }
 
-  /* MONTHLY CHART */
+  /* Monthly */
   .monthly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
   .month-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
   .month-card h3 { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); font-family: var(--mono); margin-bottom: 16px; }
-
   .month-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
   .month-bar-label { font-size: 11px; color: var(--text2); font-family: var(--mono); width: 36px; flex-shrink: 0; }
   .month-bar-track { flex: 1; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
-  .month-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+  .month-bar-fill { height: 100%; border-radius: 3px; }
   .month-bar-val { font-size: 11px; font-family: var(--mono); width: 80px; text-align: right; flex-shrink: 0; }
+  .year-select { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 4px 8px; border-radius: 6px; outline: none; cursor: pointer; }
 
   /* MISC */
   .dash-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
@@ -193,7 +227,7 @@
   .mini-bar-label { font-size: 11px; color: var(--text2); font-family: var(--mono); width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .mini-bar-track { flex: 1; height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
   .mini-bar-fill { height: 100%; border-radius: 3px; }
-  .mini-bar-val { font-size: 11px; color: var(--text2); font-family: var(--mono); width: 65px; text-align: right; }
+  .mini-bar-val { font-size: 11px; font-family: var(--mono); width: 65px; text-align: right; }
   .tag { display: inline-block; background: var(--bg3); border: 1px solid var(--border); padding: 2px 7px; border-radius: 4px; font-size: 11px; color: var(--text2); font-family: var(--mono); }
   .divider { height: 1px; background: var(--border); margin: 16px 0; }
   .confirm-box { background: rgba(224,82,82,0.07); border: 1px solid rgba(224,82,82,0.2); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 18px; }
@@ -204,8 +238,8 @@
   @keyframes spin { to{transform:rotate(360deg)} }
   .loading-text { font-size: 12px; color: var(--text3); font-family: var(--mono); letter-spacing: 2px; }
 
-  /* year selector */
-  .year-select { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 4px 8px; border-radius: 6px; outline: none; cursor: pointer; }
+  /* INFO BOX */
+  .info-box { background: rgba(76,125,207,0.07); border: 1px solid rgba(76,125,207,0.2); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 12px; color: var(--text2); font-family: var(--mono); margin-bottom: 16px; }
 
   /* RESPONSIVE */
   @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2,1fr); } }
@@ -227,6 +261,7 @@
     .main { padding: 14px; }
     .monthly-grid { grid-template-columns: 1fr; }
     .dash-row { grid-template-columns: 1fr; }
+    .mag-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -236,16 +271,15 @@
 const { useState, useEffect, useMemo, useCallback, useRef } = React;
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────
-const n = v => parseFloat(v) || 0;
-const fmt = v => `€ ${n(v).toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-const fmtG = v => `${n(v).toLocaleString('it-IT')} g`;
+const n    = v => parseFloat(v) || 0;
+const fmt  = v => `€ ${n(v).toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+const fmtG = v => `${n(v).toLocaleString('it-IT', {maximumFractionDigits:1})} g`;
 const fmtDate = d => d ? new Date(d).toLocaleDateString('it-IT') : '—';
-const calcMargine = o => (n(o.prezzoVendita) - n(o.prezzoCosto)) * n(o.qta || 1);
-const calcFatturato = o => n(o.prezzoVendita) * n(o.qta || 1);
-const calcCostoTot = o => n(o.prezzoCosto) * n(o.qta || 1);
+const calcMargine  = o => (n(o.prezzoVendita) - n(o.prezzoCosto)) * n(o.qta || 0);
+const calcFatturato = o => n(o.prezzoVendita) * n(o.qta || 0);
+const calcCostoTot  = o => n(o.prezzoCosto) * n(o.qta || 0);
 
 const MESI = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
-const MESI_FULL = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 
 const STATUS_MAP = {
   nuovo:       { label: 'Nuovo',          cls: 's-nuovo' },
@@ -288,43 +322,172 @@ function Modal({ open, onClose, children }) {
   );
 }
 
-// ─── ORDER FORM ───────────────────────────────────────────────────────────
-function OrderForm({ initial, onSave, onClose, title, saving }) {
-  const empty = { cliente:'', prodotto:'', qta:'', prezzoVendita:'', prezzoCosto:'', stato:'nuovo', data:new Date().toISOString().split('T')[0], note:'', telefono:'', indirizzo:'' };
+// ─── MAGAZZINO FORM ───────────────────────────────────────────────────────
+function MagazzinoForm({ initial, onSave, onClose, title, saving }) {
+  const empty = { nome:'', quantita:'', prezzoValore:'', note:'' };
+  const [f, setF] = useState(initial || empty);
+  const set = k => e => setF(p=>({...p,[k]:e.target.value}));
+  const valTot = n(f.prezzoValore) * n(f.quantita);
+  const save = () => {
+    if (!f.nome) return alert('Nome prodotto obbligatorio');
+    if (n(f.quantita) <= 0) return alert('Inserisci una quantità valida in grammi');
+    onSave(f);
+  };
+  return (<>
+    <h2>{title || 'Nuovo Prodotto'}</h2>
+    <div className="modal-sub">Aggiungi prodotto al magazzino</div>
+    <div className="form-grid">
+      <div className="form-group full">
+        <label className="form-label">Nome Prodotto *</label>
+        <input className="form-input" value={f.nome} onChange={set('nome')} placeholder="es. Cali Spain, OG Kush..."/>
+      </div>
+      <div className="form-group">
+        <label className="form-label">Quantità Disponibile (g) *</label>
+        <div className="input-unit-wrap">
+          <input className="form-input" type="number" step="0.1" value={f.quantita} onChange={set('quantita')} placeholder="es. 200"/>
+          <span className="input-unit">g</span>
+        </div>
+      </div>
+      <div className="form-group">
+        <label className="form-label">Valore per Grammo (€)</label>
+        <div className="input-unit-wrap">
+          <input className="form-input" type="number" step="0.01" value={f.prezzoValore} onChange={set('prezzoValore')} placeholder="0.00"/>
+          <span className="input-unit">€/g</span>
+        </div>
+      </div>
+      {n(f.quantita) > 0 && n(f.prezzoValore) > 0 && (
+        <div className="margin-preview" style={{background:'rgba(201,168,76,0.07)',borderColor:'rgba(201,168,76,0.2)'}}>
+          <div>
+            <div className="margin-preview-label">Valore Totale Stock</div>
+            <div className="margin-preview-detail">{fmtG(f.quantita)} × {fmt(f.prezzoValore)}/g</div>
+          </div>
+          <div className="margin-preview-value" style={{color:'var(--accent)'}}>{fmt(valTot)}</div>
+        </div>
+      )}
+      <div className="form-group full">
+        <label className="form-label">Note</label>
+        <textarea className="form-textarea" value={f.note} onChange={set('note')} placeholder="Note aggiuntive..."/>
+      </div>
+    </div>
+    <div className="form-actions">
+      <button className="btn btn-ghost" onClick={onClose} disabled={saving}>Annulla</button>
+      <button className="btn btn-primary" onClick={save} disabled={saving}>{saving?'⏳ Salvataggio...':'💾 Salva Prodotto'}</button>
+    </div>
+  </>);
+}
+
+// ─── RICARICA MAGAZZINO FORM ──────────────────────────────────────────────
+function RicaricaForm({ prodotto, onSave, onClose, saving }) {
+  const [grammi, setGrammi] = useState('');
+  const save = () => {
+    if (n(grammi) <= 0) return alert('Inserisci una quantità valida');
+    onSave(n(grammi));
+  };
+  return (<>
+    <h2>Ricarica Magazzino</h2>
+    <div className="modal-sub">Aggiungi grammi a: <strong style={{color:'var(--accent)'}}>{prodotto?.nome}</strong></div>
+    <div className="form-grid">
+      <div className="form-group full">
+        <label className="form-label">Grammi da Aggiungere</label>
+        <div className="input-unit-wrap">
+          <input className="form-input" type="number" step="0.1" value={grammi} onChange={e=>setGrammi(e.target.value)} placeholder="es. 100" autoFocus/>
+          <span className="input-unit">g</span>
+        </div>
+      </div>
+      {n(grammi) > 0 && (
+        <div className="margin-preview" style={{background:'rgba(76,175,130,0.07)',borderColor:'rgba(76,175,130,0.2)'}}>
+          <div>
+            <div className="margin-preview-label">Disponibile dopo ricarica</div>
+            <div className="margin-preview-detail">Attuale: {fmtG(prodotto?.quantita)} + {fmtG(grammi)}</div>
+          </div>
+          <div className="margin-preview-value pos">{fmtG(n(prodotto?.quantita) + n(grammi))}</div>
+        </div>
+      )}
+    </div>
+    <div className="form-actions">
+      <button className="btn btn-ghost" onClick={onClose} disabled={saving}>Annulla</button>
+      <button className="btn btn-primary" onClick={save} disabled={saving}>{saving?'⏳...':'+ Aggiungi Grammi'}</button>
+    </div>
+  </>);
+}
+
+// ─── ORDER FORM (con selezione magazzino) ─────────────────────────────────
+function OrderForm({ initial, onSave, onClose, title, saving, magazzino }) {
+  const empty = { cliente:'', prodottoMagazzinoId:'', prodotto:'', qta:'', prezzoVendita:'', prezzoCosto:'', stato:'nuovo', data:new Date().toISOString().split('T')[0], note:'', telefono:'', indirizzo:'' };
   const [f, setF] = useState(initial || empty);
   const set = k => e => setF(p=>({...p,[k]:e.target.value}));
 
-  const qta  = n(f.qta);
-  const vend = n(f.prezzoVendita);
-  const cost = n(f.prezzoCosto);
-  const marg = (vend - cost) * (qta || 1);
-  const totV = vend * (qta || 1);
-  const totC = cost * (qta || 1);
+  // Quando si seleziona un prodotto dal magazzino, auto-fill nome e prezzo costo
+  const handleProdottoChange = e => {
+    const id = e.target.value;
+    const mag = magazzino.find(m=>m.id===id);
+    if (mag) {
+      setF(p=>({...p, prodottoMagazzinoId: id, prodotto: mag.nome, prezzoCosto: mag.prezzoValore||''}));
+    } else {
+      setF(p=>({...p, prodottoMagazzinoId:'', prodotto:''}));
+    }
+  };
+
+  const qtaRichiesta = n(f.qta);
+  const prodMag = magazzino.find(m=>m.id===f.prodottoMagazzinoId);
+  const stockDisp = prodMag ? n(prodMag.quantita) : null;
+  const stockSuff = stockDisp === null || qtaRichiesta <= stockDisp;
+  const vend = n(f.prezzoVendita), cost = n(f.prezzoCosto);
+  const marg = (vend - cost) * (qtaRichiesta || 1);
+  const totV = vend * (qtaRichiesta || 1), totC = cost * (qtaRichiesta || 1);
   const hasVals = vend > 0 || cost > 0;
 
   const save = () => {
-    if (!f.cliente || !f.prodotto) return alert('Cliente e Prodotto sono obbligatori');
+    if (!f.cliente) return alert('Cliente obbligatorio');
+    if (!f.prodotto) return alert('Seleziona o inserisci un prodotto');
+    if (!stockSuff) return alert(`Scorte insufficienti! Disponibile: ${fmtG(stockDisp)}, richiesto: ${fmtG(qtaRichiesta)}`);
     onSave(f);
   };
 
   return (<>
     <h2>{title || 'Nuovo Ordine'}</h2>
-    <div className="modal-sub">Inserisci quantità in grammi, prezzo di vendita e costo per calcolare il ricavo netto</div>
+    <div className="modal-sub">Il prodotto selezionato verrà scalato automaticamente dal magazzino</div>
     <div className="form-grid">
       <div className="form-group"><label className="form-label">Cliente *</label><input className="form-input" value={f.cliente} onChange={set('cliente')} placeholder="Nome cliente"/></div>
       <div className="form-group"><label className="form-label">Telefono</label><input className="form-input" value={f.telefono} onChange={set('telefono')} placeholder="333 1234567"/></div>
-      <div className="form-group full"><label className="form-label">Prodotto / Descrizione *</label><input className="form-input" value={f.prodotto} onChange={set('prodotto')} placeholder="Descrizione prodotto o servizio"/></div>
 
-      {/* Quantità in grammi */}
+      {/* Selezione prodotto da magazzino */}
+      <div className="form-group full">
+        <label className="form-label">Prodotto da Magazzino *</label>
+        <select className="form-select" value={f.prodottoMagazzinoId} onChange={handleProdottoChange}>
+          <option value="">— Seleziona prodotto —</option>
+          {magazzino.filter(m=>n(m.quantita)>0).map(m=>(
+            <option key={m.id} value={m.id}>{m.nome} ({fmtG(m.quantita)} disponibili)</option>
+          ))}
+          {magazzino.filter(m=>n(m.quantita)<=0).length>0 && (
+            <optgroup label="— Esauriti —">
+              {magazzino.filter(m=>n(m.quantita)<=0).map(m=>(
+                <option key={m.id} value={m.id} disabled>{m.nome} (ESAURITO)</option>
+              ))}
+            </optgroup>
+          )}
+        </select>
+      </div>
+
+      {/* Quantità */}
       <div className="form-group">
-        <label className="form-label">Quantità (grammi)</label>
+        <label className="form-label">Quantità Ordine (grammi) *</label>
         <div className="input-unit-wrap">
-          <input className="form-input" type="number" value={f.qta} onChange={set('qta')} placeholder="es. 50" min="0" step="0.1"/>
+          <input className="form-input" type="number" step="0.1" value={f.qta} onChange={set('qta')} placeholder="es. 10"/>
           <span className="input-unit">g</span>
         </div>
       </div>
 
-      {/* Prezzo vendita */}
+      {/* Stock check */}
+      {prodMag && qtaRichiesta > 0 && (
+        <div className={`stock-warning ${stockSuff?'ok':'low'}`}>
+          {stockSuff
+            ? `✓ Scorte OK — Dopo ordine rimarranno ${fmtG(stockDisp - qtaRichiesta)}`
+            : `✗ Scorte insufficienti! Disponibile: ${fmtG(stockDisp)} — Richiesto: ${fmtG(qtaRichiesta)}`
+          }
+        </div>
+      )}
+
       <div className="form-group">
         <label className="form-label">Prezzo Vendita / g (€) *</label>
         <div className="input-unit-wrap">
@@ -332,12 +495,10 @@ function OrderForm({ initial, onSave, onClose, title, saving }) {
           <span className="input-unit">€/g</span>
         </div>
       </div>
-
-      {/* Prezzo costo */}
       <div className="form-group">
         <label className="form-label">Prezzo Costo / g (€)</label>
         <div className="input-unit-wrap">
-          <input className="form-input" type="number" step="0.01" value={f.prezzoCosto} onChange={set('prezzoCosto')} placeholder="0.00"/>
+          <input className="form-input" type="number" step="0.01" value={f.prezzoCosto} onChange={set('prezzoCosto')} placeholder="auto da magazzino"/>
           <span className="input-unit">€/g</span>
         </div>
       </div>
@@ -348,29 +509,26 @@ function OrderForm({ initial, onSave, onClose, title, saving }) {
           {Object.entries(STATUS_MAP).map(([k,v])=><option key={k} value={k}>{v.label}</option>)}
         </select>
       </div>
+      <div className="form-group"><label className="form-label">Data</label><input className="form-input" type="date" value={f.data} onChange={set('data')}/></div>
 
-      {/* Preview margine */}
       {hasVals && (
         <div className={`margin-preview${marg<0?' loss':''}`}>
-          <div className="margin-preview-left">
+          <div>
             <div className="margin-preview-label">Ricavo Netto</div>
-            <div className="margin-preview-detail">
-              Vendita {fmt(totV)} − Costo {fmt(totC)} ({qta||1} g)
-            </div>
+            <div className="margin-preview-detail">Vendita {fmt(totV)} − Costo {fmt(totC)} ({qtaRichiesta||1} g)</div>
           </div>
-          <div className={`margin-preview-value ${marg>=0?'pos':'neg'}`}>
-            {marg>=0?'+':''}{fmt(marg)}
-          </div>
+          <div className={`margin-preview-value ${marg>=0?'pos':'neg'}`}>{marg>=0?'+':''}{fmt(marg)}</div>
         </div>
       )}
 
-      <div className="form-group"><label className="form-label">Data</label><input className="form-input" type="date" value={f.data} onChange={set('data')}/></div>
-      <div className="form-group full"><label className="form-label">Indirizzo Spedizione</label><input className="form-input" value={f.indirizzo} onChange={set('indirizzo')} placeholder="Via, Città, CAP"/></div>
+      <div className="form-group full"><label className="form-label">Indirizzo</label><input className="form-input" value={f.indirizzo} onChange={set('indirizzo')} placeholder="Via, Città, CAP"/></div>
       <div className="form-group full"><label className="form-label">Note</label><textarea className="form-textarea" value={f.note} onChange={set('note')} placeholder="Note aggiuntive..."/></div>
     </div>
     <div className="form-actions">
       <button className="btn btn-ghost" onClick={onClose} disabled={saving}>Annulla</button>
-      <button className="btn btn-primary" onClick={save} disabled={saving}>{saving?'⏳ Salvataggio...':'💾 Salva Ordine'}</button>
+      <button className="btn btn-primary" onClick={save} disabled={saving||(!stockSuff&&qtaRichiesta>0)}>
+        {saving?'⏳ Salvataggio...':'💾 Salva Ordine'}
+      </button>
     </div>
   </>);
 }
@@ -384,7 +542,7 @@ function MovimentoForm({ initial, onSave, onClose, title, saving }) {
   const cats = f.tipo==='entrata' ? ['Vendita','Servizi','Consulenza','Rimborso','Altro'] : ['Fornitore','Spedizione','Materiali','Utenze','Tasse','Software','Altro'];
   return (<>
     <h2>{title||'Nuovo Movimento'}</h2>
-    <div className="modal-sub">Registra entrata o uscita aggiuntiva rispetto agli ordini</div>
+    <div className="modal-sub">Registra entrata o uscita extra</div>
     <div className="form-grid">
       <div className="form-group"><label className="form-label">Tipo</label>
         <select className="form-select" value={f.tipo} onChange={set('tipo')}>
@@ -408,164 +566,283 @@ function MovimentoForm({ initial, onSave, onClose, title, saving }) {
   </>);
 }
 
-// ─── MONTHLY CHART COMPONENT ──────────────────────────────────────────────
+// ─── MAGAZZINO PAGE ───────────────────────────────────────────────────────
+function MagazzinoPage({ col }) {
+  const { data: magazzino, add, update, remove } = col;
+  const [modal, setModal]     = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [saving, setSaving]   = useState(false);
+
+  const valoreTotale = magazzino.reduce((s,m)=>s + n(m.prezzoValore)*n(m.quantita), 0);
+  const grammiTotali = magazzino.reduce((s,m)=>s + n(m.quantita), 0);
+  const scarseProd   = magazzino.filter(m=>n(m.quantita)>0 && n(m.quantita)<10).length;
+  const esauriti     = magazzino.filter(m=>n(m.quantita)<=0).length;
+
+  const getStockClass = q => n(q) <= 0 ? 'empty' : n(q) < 10 ? 'low' : 'ok';
+
+  const saveProd = async f => {
+    setSaving(true);
+    try {
+      if (modal==='new') await add({...f, quantitaIniziale: n(f.quantita)});
+      else await update(selected.id, f);
+      setModal(null);
+    } catch(e){ alert('Errore: '+e.message); }
+    setSaving(false);
+  };
+
+  const saveRicarica = async grammi => {
+    setSaving(true);
+    try {
+      const nuovaQt = n(selected.quantita) + grammi;
+      await update(selected.id, { quantita: nuovaQt });
+      setModal(null);
+    } catch(e){ alert('Errore: '+e.message); }
+    setSaving(false);
+  };
+
+  const deleteProd = async () => {
+    setSaving(true);
+    try { await remove(selected.id); setModal(null); }
+    catch(e){ alert('Errore: '+e.message); }
+    setSaving(false);
+  };
+
+  return (<div>
+    <div className="page-header">
+      <div>
+        <div className="page-title">Magazzino</div>
+        <div className="page-subtitle">{magazzino.length} prodotti • {fmtG(grammiTotali)} totali</div>
+      </div>
+      <button className="btn btn-primary" onClick={()=>{setSelected(null);setModal('new')}}>+ Nuovo Prodotto</button>
+    </div>
+
+    {/* KPI magazzino */}
+    <div className="kpi-grid" style={{gridTemplateColumns:'repeat(4,1fr)',marginBottom:'24px'}}>
+      <div className="kpi-card orange">
+        <div className="kpi-icon">📦</div>
+        <div className="kpi-label">Prodotti</div>
+        <div className="kpi-value orange">{magazzino.length}</div>
+        <div className="kpi-sub">{esauriti} esauriti</div>
+      </div>
+      <div className="kpi-card gold">
+        <div className="kpi-icon">⚖</div>
+        <div className="kpi-label">Grammi Totali</div>
+        <div className="kpi-value gold">{n(grammiTotali).toLocaleString('it-IT',{maximumFractionDigits:1})}</div>
+        <div className="kpi-sub">grammi disponibili</div>
+      </div>
+      <div className="kpi-card green">
+        <div className="kpi-icon">💰</div>
+        <div className="kpi-label">Soldi Magazzino Totale</div>
+        <div className="kpi-value green">{fmt(valoreTotale)}</div>
+        <div className="kpi-sub">valore stock attuale</div>
+      </div>
+      <div className="kpi-card red">
+        <div className="kpi-icon">⚠</div>
+        <div className="kpi-label">Scorte Basse</div>
+        <div className="kpi-value red">{scarseProd + esauriti}</div>
+        <div className="kpi-sub">{scarseProd} basse • {esauriti} esaurite</div>
+      </div>
+    </div>
+
+    {magazzino.length === 0 ? (
+      <div className="empty-state">
+        <div className="icon">📦</div>
+        <p>Nessun prodotto in magazzino.<br/>Aggiungi il tuo primo prodotto!</p>
+      </div>
+    ) : (
+      <div className="mag-grid">
+        {[...magazzino].sort((a,b)=>n(b.quantita)-n(a.quantita)).map(m => {
+          const sc = getStockClass(m.quantita);
+          const qt = n(m.quantita);
+          const qtInit = n(m.quantitaIniziale) || qt || 1;
+          const pct = Math.min(100, (qt / qtInit) * 100);
+          const valTot = n(m.prezzoValore) * qt;
+          return (
+            <div key={m.id} className={`mag-card ${sc}`}>
+              <div className="mag-card-badge">
+                {sc==='empty' && <span className="status-badge s-annullato">ESAURITO</span>}
+                {sc==='low'   && <span className="status-badge s-lavorazione">SCORTA BASSA</span>}
+                {sc==='ok'    && <span className="status-badge s-consegnato">DISPONIBILE</span>}
+              </div>
+              <div className="mag-card-name">{m.nome}</div>
+              {m.note && <div style={{fontSize:'11px',color:'var(--text3)',marginTop:'2px'}}>{m.note}</div>}
+              <div className={`mag-card-stock ${sc}`}>{fmtG(m.quantita)}</div>
+              <div className="stock-bar-track">
+                <div className="stock-bar-fill" style={{width:`${pct}%`, background: sc==='empty'?'var(--red)':sc==='low'?'var(--accent)':'var(--green)'}}></div>
+              </div>
+              <div className="mag-card-meta">
+                <div className="mag-meta-item">
+                  <div className="mag-meta-label">Valore/g</div>
+                  <div className="mag-meta-value" style={{color:'var(--accent)'}}>{n(m.prezzoValore)>0?fmt(m.prezzoValore):'—'}</div>
+                </div>
+                <div className="mag-meta-item">
+                  <div className="mag-meta-label">Valore Stock</div>
+                  <div className="mag-meta-value" style={{color:'var(--green)'}}>{valTot>0?fmt(valTot):'—'}</div>
+                </div>
+              </div>
+              <div className="mag-card-actions">
+                <button className="btn btn-ghost btn-sm" style={{flex:1}} onClick={()=>{setSelected(m);setModal('ricarica')}}>+ Ricarica</button>
+                <button className="btn btn-ghost btn-sm" onClick={()=>{setSelected(m);setModal('edit')}}>✎</button>
+                <button className="btn btn-danger btn-sm" onClick={()=>{setSelected(m);setModal('delete')}}>⌫</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    )}
+
+    {/* Riepilogo valore per prodotto */}
+    {magazzino.length > 0 && (
+      <div className="fin-card">
+        <h3>Riepilogo Valore Magazzino</h3>
+        {[...magazzino].sort((a,b)=>n(b.prezzoValore)*n(b.quantita)-n(a.prezzoValore)*n(a.quantita)).map(m=>{
+          const val = n(m.prezzoValore)*n(m.quantita);
+          const maxV = Math.max(...magazzino.map(x=>n(x.prezzoValore)*n(x.quantita)),1);
+          return (
+            <div key={m.id} className="mini-bar-row" style={{marginBottom:'10px'}}>
+              <div className="mini-bar-label" style={{width:'120px'}}>{m.nome}</div>
+              <div style={{fontSize:'11px',color:'var(--text3)',fontFamily:'var(--mono)',width:'70px',flexShrink:0}}>{fmtG(m.quantita)}</div>
+              <div className="mini-bar-track"><div className="mini-bar-fill" style={{width:`${(val/maxV)*100}%`,background:'var(--accent)'}}></div></div>
+              <div className="mini-bar-val" style={{color:'var(--accent)',width:'80px'}}>{val>0?fmt(val):'—'}</div>
+            </div>
+          );
+        })}
+        <div className="divider"></div>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <span style={{fontSize:'12px',color:'var(--text3)',fontFamily:'var(--mono)'}}>TOTALE MAGAZZINO</span>
+          <span style={{fontSize:'20px',fontWeight:'800',color:'var(--green)',letterSpacing:'-0.5px'}}>{fmt(valoreTotale)}</span>
+        </div>
+      </div>
+    )}
+
+    <Modal open={modal==='new'||modal==='edit'} onClose={()=>setModal(null)}>
+      <MagazzinoForm initial={selected} onSave={saveProd} onClose={()=>setModal(null)} title={modal==='new'?'Nuovo Prodotto Magazzino':'Modifica Prodotto'} saving={saving}/>
+    </Modal>
+    <Modal open={modal==='ricarica'} onClose={()=>setModal(null)}>
+      <RicaricaForm prodotto={selected} onSave={saveRicarica} onClose={()=>setModal(null)} saving={saving}/>
+    </Modal>
+    <Modal open={modal==='delete'} onClose={()=>setModal(null)}>
+      <h2>Elimina Prodotto</h2><div className="modal-sub">Questa azione non può essere annullata</div>
+      <div className="confirm-box"><p>Elimina <strong>{selected?.nome}</strong> dal magazzino ({fmtG(selected?.quantita)})?</p></div>
+      <div className="form-actions">
+        <button className="btn btn-ghost" onClick={()=>setModal(null)} disabled={saving}>Annulla</button>
+        <button className="btn btn-danger" onClick={deleteProd} disabled={saving}>{saving?'⏳...':'⌫ Elimina'}</button>
+      </div>
+    </Modal>
+  </div>);
+}
+
+// ─── MONTHLY CHARTS ───────────────────────────────────────────────────────
 function MonthlyCharts({ orders, movimenti }) {
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState(currentYear);
-  const years = [currentYear - 1, currentYear, currentYear + 1];
 
-  // Ordini per mese: margine, grammi movimentati, num ordini
   const monthlyOrders = useMemo(() => {
-    const months = Array.from({length:12}, (_,i) => ({ mese: MESI[i], margine:0, grammi:0, ordini:0, fatturato:0 }));
+    const months = Array.from({length:12},(_,i)=>({mese:MESI[i],margine:0,grammi:0,ordini:0}));
     orders.forEach(o => {
       const d = o.data ? new Date(o.data) : o._ts ? new Date(o._ts) : null;
-      if (!d || d.getFullYear() !== year) return;
+      if (!d || d.getFullYear()!==year) return;
       const m = d.getMonth();
-      months[m].margine   += calcMargine(o);
-      months[m].grammi    += n(o.qta);
-      months[m].ordini    += 1;
-      months[m].fatturato += calcFatturato(o);
+      months[m].margine += calcMargine(o);
+      months[m].grammi  += n(o.qta);
+      months[m].ordini  += 1;
     });
     return months;
   }, [orders, year]);
 
-  // Movimenti extra per mese
-  const monthlyMov = useMemo(() => {
-    const months = Array.from({length:12}, (_,i) => ({ mese: MESI[i], entrate:0, uscite:0 }));
-    movimenti.forEach(m => {
-      const d = m.data ? new Date(m.data) : m._ts ? new Date(m._ts) : null;
-      if (!d || d.getFullYear() !== year) return;
-      const idx = d.getMonth();
-      if (m.tipo==='entrata') months[idx].entrate += n(m.importo);
-      else months[idx].uscite += n(m.importo);
-    });
-    return months;
-  }, [movimenti, year]);
+  const maxM = Math.max(...monthlyOrders.map(m=>Math.abs(m.margine)),1);
+  const maxG = Math.max(...monthlyOrders.map(m=>m.grammi),1);
+  const maxO = Math.max(...monthlyOrders.map(m=>m.ordini),1);
 
-  const maxMargine  = Math.max(...monthlyOrders.map(m=>m.margine), 1);
-  const maxGrammi   = Math.max(...monthlyOrders.map(m=>m.grammi), 1);
-  const maxMovTotal = Math.max(...monthlyMov.map(m=>m.entrate+m.uscite), 1);
-
-  return (
-    <div>
-      <div className="section-title">
-        Statistiche Mensili
-        <select className="year-select" value={year} onChange={e=>setYear(parseInt(e.target.value))}>
-          {years.map(y=><option key={y} value={y}>{y}</option>)}
-        </select>
+  return (<div>
+    <div className="section-title">
+      Statistiche Mensili
+      <select className="year-select" value={year} onChange={e=>setYear(parseInt(e.target.value))}>
+        {[year-1,year,year+1].map(y=><option key={y} value={y}>{y}</option>)}
+      </select>
+    </div>
+    <div className="monthly-grid">
+      <div className="month-card">
+        <h3>Ricavo Netto per Mese</h3>
+        {monthlyOrders.map((m,i)=>(
+          <div key={i} className="month-bar-row">
+            <div className="month-bar-label">{m.mese}</div>
+            <div className="month-bar-track"><div className="month-bar-fill" style={{width:`${(Math.abs(m.margine)/maxM)*100}%`,background:m.margine>=0?'var(--green)':'var(--red)'}}></div></div>
+            <div className="month-bar-val" style={{color:m.margine>0?'var(--green)':m.margine<0?'var(--red)':'var(--text3)'}}>{m.margine!==0?(m.margine>0?'+':'')+fmt(m.margine):'—'}</div>
+          </div>
+        ))}
       </div>
-
-      <div className="monthly-grid">
-        {/* Margine mensile */}
-        <div className="month-card">
-          <h3>Ricavo Netto per Mese</h3>
-          {monthlyOrders.map((m,i) => (
+      <div className="month-card">
+        <h3>Grammi Movimentati per Mese</h3>
+        {monthlyOrders.map((m,i)=>(
+          <div key={i} className="month-bar-row">
+            <div className="month-bar-label">{m.mese}</div>
+            <div className="month-bar-track"><div className="month-bar-fill" style={{width:`${(m.grammi/maxG)*100}%`,background:'var(--accent)'}}></div></div>
+            <div className="month-bar-val" style={{color:m.grammi>0?'var(--accent)':'var(--text3)'}}>{m.grammi>0?fmtG(m.grammi):'—'}</div>
+          </div>
+        ))}
+      </div>
+      <div className="month-card">
+        <h3>Numero Ordini per Mese</h3>
+        {monthlyOrders.map((m,i)=>(
+          <div key={i} className="month-bar-row">
+            <div className="month-bar-label">{m.mese}</div>
+            <div className="month-bar-track"><div className="month-bar-fill" style={{width:`${(m.ordini/maxO)*100}%`,background:'var(--blue)'}}></div></div>
+            <div className="month-bar-val" style={{color:m.ordini>0?'var(--blue)':'var(--text3)'}}>{m.ordini>0?`${m.ordini} ord.`:'—'}</div>
+          </div>
+        ))}
+      </div>
+      <div className="month-card">
+        <h3>Movimenti Finanza per Mese</h3>
+        {Array.from({length:12},(_,i)=>{
+          const ent = movimenti.filter(m=>{const d=m.data?new Date(m.data):null;return d&&d.getFullYear()===year&&d.getMonth()===i&&m.tipo==='entrata'}).reduce((s,m)=>s+n(m.importo),0);
+          const usc = movimenti.filter(m=>{const d=m.data?new Date(m.data):null;return d&&d.getFullYear()===year&&d.getMonth()===i&&m.tipo==='uscita'}).reduce((s,m)=>s+n(m.importo),0);
+          const maxMov = Math.max(...Array.from({length:12},(_,j)=>{
+            const e2=movimenti.filter(m=>{const d=m.data?new Date(m.data):null;return d&&d.getFullYear()===year&&d.getMonth()===j&&m.tipo==='entrata'}).reduce((s,m)=>s+n(m.importo),0);
+            const u2=movimenti.filter(m=>{const d=m.data?new Date(m.data):null;return d&&d.getFullYear()===year&&d.getMonth()===j&&m.tipo==='uscita'}).reduce((s,m)=>s+n(m.importo),0);
+            return e2+u2;
+          }),1);
+          return (
             <div key={i} className="month-bar-row">
-              <div className="month-bar-label">{m.mese}</div>
-              <div className="month-bar-track">
-                <div className="month-bar-fill" style={{width:`${Math.max(0,(m.margine/maxMargine)*100)}%`, background: m.margine>=0?'var(--green)':'var(--red)'}}></div>
+              <div className="month-bar-label">{MESI[i]}</div>
+              <div style={{flex:1,display:'flex',flexDirection:'column',gap:'2px'}}>
+                {ent>0&&<div style={{height:'4px',background:'var(--bg3)',borderRadius:'2px',overflow:'hidden'}}><div style={{width:`${(ent/maxMov)*100}%`,height:'100%',background:'var(--green)',borderRadius:'2px'}}></div></div>}
+                {usc>0&&<div style={{height:'4px',background:'var(--bg3)',borderRadius:'2px',overflow:'hidden'}}><div style={{width:`${(usc/maxMov)*100}%`,height:'100%',background:'var(--red)',borderRadius:'2px'}}></div></div>}
+                {ent===0&&usc===0&&<div style={{height:'4px',background:'var(--bg3)',borderRadius:'2px'}}></div>}
               </div>
-              <div className="month-bar-val" style={{color:m.margine>0?'var(--green)':m.margine<0?'var(--red)':'var(--text3)'}}>
-                {m.margine!==0?(m.margine>0?'+':'')+fmt(m.margine):'—'}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Grammi movimentati */}
-        <div className="month-card">
-          <h3>Grammi Movimentati per Mese</h3>
-          {monthlyOrders.map((m,i) => (
-            <div key={i} className="month-bar-row">
-              <div className="month-bar-label">{m.mese}</div>
-              <div className="month-bar-track">
-                <div className="month-bar-fill" style={{width:`${(m.grammi/maxGrammi)*100}%`, background:'var(--accent)'}}></div>
-              </div>
-              <div className="month-bar-val" style={{color: m.grammi>0?'var(--accent)':'var(--text3)'}}>
-                {m.grammi>0?fmtG(m.grammi):'—'}
+              <div style={{fontSize:'10px',fontFamily:'var(--mono)',width:'80px',textAlign:'right',lineHeight:'1.4'}}>
+                {ent>0&&<div style={{color:'var(--green)'}}>+{fmt(ent)}</div>}
+                {usc>0&&<div style={{color:'var(--red)'}}>-{fmt(usc)}</div>}
+                {ent===0&&usc===0&&<span style={{color:'var(--text3)'}}>—</span>}
               </div>
             </div>
-          ))}
-        </div>
-
-        {/* Ordini per mese */}
-        <div className="month-card">
-          <h3>Numero Ordini per Mese</h3>
-          {monthlyOrders.map((m,i) => {
-            const maxOrd = Math.max(...monthlyOrders.map(x=>x.ordini), 1);
-            return (
-              <div key={i} className="month-bar-row">
-                <div className="month-bar-label">{m.mese}</div>
-                <div className="month-bar-track">
-                  <div className="month-bar-fill" style={{width:`${(m.ordini/maxOrd)*100}%`, background:'var(--blue)'}}></div>
-                </div>
-                <div className="month-bar-val" style={{color: m.ordini>0?'var(--blue)':'var(--text3)'}}>
-                  {m.ordini>0?`${m.ordini} ord.`:'—'}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Movimenti finanza per mese */}
-        <div className="month-card">
-          <h3>Movimenti Finanza per Mese</h3>
-          {monthlyMov.map((m,i) => (
-            <div key={i} style={{marginBottom:'8px'}}>
-              <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'3px'}}>
-                <div className="month-bar-label">{m.mese}</div>
-                <div style={{flex:1}}>
-                  {m.entrate>0 && (
-                    <div style={{display:'flex',alignItems:'center',gap:'6px',marginBottom:'2px'}}>
-                      <div style={{flex:1,height:'4px',background:'var(--bg3)',borderRadius:'2px',overflow:'hidden'}}>
-                        <div style={{width:`${(m.entrate/maxMovTotal)*100}%`,height:'100%',background:'var(--green)',borderRadius:'2px'}}></div>
-                      </div>
-                      <span style={{fontSize:'10px',color:'var(--green)',fontFamily:'var(--mono)',width:'60px',textAlign:'right'}}>+{fmt(m.entrate)}</span>
-                    </div>
-                  )}
-                  {m.uscite>0 && (
-                    <div style={{display:'flex',alignItems:'center',gap:'6px'}}>
-                      <div style={{flex:1,height:'4px',background:'var(--bg3)',borderRadius:'2px',overflow:'hidden'}}>
-                        <div style={{width:`${(m.uscite/maxMovTotal)*100}%`,height:'100%',background:'var(--red)',borderRadius:'2px'}}></div>
-                      </div>
-                      <span style={{fontSize:'10px',color:'var(--red)',fontFamily:'var(--mono)',width:'60px',textAlign:'right'}}>-{fmt(m.uscite)}</span>
-                    </div>
-                  )}
-                  {m.entrate===0&&m.uscite===0 && <span style={{fontSize:'10px',color:'var(--text3)',fontFamily:'var(--mono)'}}>—</span>}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
     </div>
-  );
+  </div>);
 }
 
 // ─── DASHBOARD ────────────────────────────────────────────────────────────
-function Dashboard({ orders, movimenti }) {
-  // Calcoli globali
-  const fatturato   = orders.reduce((s,o)=>s+calcFatturato(o), 0);
-  const costoTotale = orders.reduce((s,o)=>s+calcCostoTot(o), 0);
-  const margTotale  = orders.reduce((s,o)=>s+calcMargine(o), 0);
+function Dashboard({ orders, movimenti, magazzino }) {
+  const fatturato   = orders.reduce((s,o)=>s+calcFatturato(o),0);
+  const costoTotale = orders.reduce((s,o)=>s+calcCostoTot(o),0);
+  const margTotale  = orders.reduce((s,o)=>s+calcMargine(o),0);
   const totAttivi   = orders.filter(o=>!['consegnato','annullato'].includes(o.stato)).length;
-  const grammiTot   = orders.reduce((s,o)=>s+n(o.qta), 0);
-
-  // Movimenti finanza extra
+  const grammiTot   = orders.reduce((s,o)=>s+n(o.qta),0);
   const movEntrate  = movimenti.filter(m=>m.tipo==='entrata').reduce((s,m)=>s+n(m.importo),0);
   const movUscite   = movimenti.filter(m=>m.tipo==='uscita').reduce((s,m)=>s+n(m.importo),0);
-
-  // Saldo totale = margine ordini + movimenti extra entrate - movimenti extra uscite
   const saldoTotale = margTotale + movEntrate - movUscite;
+  const valoreMag   = magazzino.reduce((s,m)=>s+n(m.prezzoValore)*n(m.quantita),0);
+  const esauriti    = magazzino.filter(m=>n(m.quantita)<=0).length;
 
   const recent = [...orders].sort((a,b)=>(b._ts||0)-(a._ts||0)).slice(0,5);
   const statusCount = {};
   orders.forEach(o=>{statusCount[o.stato]=(statusCount[o.stato]||0)+1;});
-
   const clientiMap = {};
   orders.forEach(o=>{ if(o.cliente) clientiMap[o.cliente]=(clientiMap[o.cliente]||0)+calcMargine(o); });
   const topClienti = Object.entries(clientiMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const maxVal = Math.max(...topClienti.map(([,v])=>v), 1);
+  const maxVal = Math.max(...topClienti.map(([,v])=>v),1);
 
   return (<div>
     <div className="page-header">
@@ -575,19 +852,20 @@ function Dashboard({ orders, movimenti }) {
       </div>
     </div>
 
-    {/* KPI principali */}
     <div className="kpi-grid">
-      <div className="kpi-card gold"><div className="kpi-icon">📋</div><div className="kpi-label">Totale Ordini</div><div className="kpi-value gold">{orders.length}</div><div className="kpi-sub">{totAttivi} attivi • {fmtG(grammiTot)} tot.</div></div>
+      <div className="kpi-card gold"><div className="kpi-icon">📋</div><div className="kpi-label">Totale Ordini</div><div className="kpi-value gold">{orders.length}</div><div className="kpi-sub">{totAttivi} attivi • {fmtG(grammiTot)}</div></div>
       <div className="kpi-card green"><div className="kpi-icon">💰</div><div className="kpi-label">Fatturato</div><div className="kpi-value green">{fmt(fatturato)}</div><div className="kpi-sub">Costo: {fmt(costoTotale)}</div></div>
-      <div className="kpi-card purple"><div className="kpi-icon">📈</div><div className="kpi-label">Ricavo Netto Ordini</div><div className={`kpi-value ${margTotale>=0?'green':'red'}`}>{fmt(margTotale)}</div><div className="kpi-sub">vendita − costo</div></div>
-      <div className="kpi-card blue"><div className="kpi-icon">⚖</div>
-        <div className="kpi-label">Saldo Totale</div>
-        <div className={`kpi-value ${saldoTotale>=0?'green':'red'}`}>{fmt(saldoTotale)}</div>
-        <div className="kpi-sub">ordini + finanza extra</div>
-      </div>
+      <div className="kpi-card purple"><div className="kpi-icon">📈</div><div className="kpi-label">Ricavo Netto</div><div className={`kpi-value ${margTotale>=0?'green':'red'}`}>{fmt(margTotale)}</div><div className="kpi-sub">vendita − costo</div></div>
+      <div className="kpi-card blue"><div className="kpi-icon">⚖</div><div className="kpi-label">Saldo Totale</div><div className={`kpi-value ${saldoTotale>=0?'green':'red'}`}>{fmt(saldoTotale)}</div><div className="kpi-sub">ordini + extra</div></div>
     </div>
 
-    {/* Ordini recenti + top clienti */}
+    {/* Magazzino snapshot */}
+    <div className="kpi-grid" style={{gridTemplateColumns:'repeat(3,1fr)',marginBottom:'20px'}}>
+      <div className="kpi-card orange"><div className="kpi-icon">📦</div><div className="kpi-label">Valore Magazzino</div><div className="kpi-value orange">{fmt(valoreMag)}</div><div className="kpi-sub">{magazzino.length} prodotti in stock</div></div>
+      <div className="kpi-card gold"><div className="kpi-label">Grammi in Magazzino</div><div className="kpi-value gold">{n(magazzino.reduce((s,m)=>s+n(m.quantita),0)).toLocaleString('it-IT',{maximumFractionDigits:1})}</div><div className="kpi-sub">g disponibili ora</div></div>
+      <div className="kpi-card red"><div className="kpi-label">Prodotti Esauriti</div><div className="kpi-value red">{esauriti}</div><div className="kpi-sub">{magazzino.filter(m=>n(m.quantita)>0&&n(m.quantita)<10).length} con scorta bassa</div></div>
+    </div>
+
     <div className="dash-row">
       <div className="table-container">
         <div className="table-toolbar" style={{justifyContent:'space-between'}}>
@@ -598,7 +876,7 @@ function Dashboard({ orders, movimenti }) {
           ? <div className="empty-state"><div className="icon">📦</div><p>Nessun ordine ancora</p></div>
           : <table><thead><tr><th>Cliente</th><th>Prodotto</th><th>Grammi</th><th>Ricavo</th><th>Stato</th></tr></thead>
             <tbody>{recent.map(o=>{
-              const m = calcMargine(o);
+              const m=calcMargine(o);
               return (<tr key={o.id}>
                 <td style={{fontWeight:'600'}}>{o.cliente}</td>
                 <td style={{color:'var(--text2)',maxWidth:'100px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{o.prodotto}</td>
@@ -609,7 +887,6 @@ function Dashboard({ orders, movimenti }) {
             })}</tbody></table>
         }
       </div>
-
       <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
         <div className="fin-card" style={{padding:'18px'}}>
           <h3>Top Clienti per Ricavo</h3>
@@ -631,7 +908,7 @@ function Dashboard({ orders, movimenti }) {
               {Object.entries(STATUS_MAP).map(([k,v])=>(
                 <div key={k} style={{textAlign:'center',background:'var(--bg3)',borderRadius:'8px',padding:'10px 4px'}}>
                   <div style={{fontSize:'22px',fontWeight:'800',color:k==='consegnato'?'var(--green)':k==='annullato'?'var(--red)':k==='lavorazione'?'var(--accent)':'var(--text)'}}>{statusCount[k]||0}</div>
-                  <div style={{fontSize:'9px',color:'var(--text3)',fontFamily:'var(--mono)',letterSpacing:'0.5px',textTransform:'uppercase',marginTop:'2px'}}>{v.label}</div>
+                  <div style={{fontSize:'9px',color:'var(--text3)',fontFamily:'var(--mono)',textTransform:'uppercase',marginTop:'2px'}}>{v.label}</div>
                 </div>
               ))}
             </div>
@@ -639,20 +916,18 @@ function Dashboard({ orders, movimenti }) {
         )}
       </div>
     </div>
-
-    {/* Grafici mensili */}
-    <MonthlyCharts orders={orders} movimenti={movimenti} />
+    <MonthlyCharts orders={orders} movimenti={movimenti}/>
   </div>);
 }
 
 // ─── ORDINI PAGE ──────────────────────────────────────────────────────────
-function OrdiniPage({ col }) {
+function OrdiniPage({ col, magazzino, magazzinoCol }) {
   const { data: orders, add, update, remove } = col;
-  const [modal, setModal] = useState(null);
+  const [modal, setModal]     = useState(null);
   const [selected, setSelected] = useState(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch]   = useState('');
   const [filterStato, setFilterStato] = useState('');
-  const [saving, setSaving] = useState(false);
+  const [saving, setSaving]   = useState(false);
 
   const filtered = useMemo(()=>orders.filter(o=>{
     const s=search.toLowerCase();
@@ -663,16 +938,67 @@ function OrdiniPage({ col }) {
   const totMargine   = filtered.reduce((s,o)=>s+calcMargine(o),0);
   const totGrammi    = filtered.reduce((s,o)=>s+n(o.qta),0);
 
-  const saveOrder = async f => { setSaving(true); try { if(modal==='new') await add(f); else await update(selected.id,f); setModal(null); } catch(e){alert('Errore: '+e.message);} setSaving(false); };
-  const deleteOrder = async () => { setSaving(true); try { await remove(selected.id); setModal(null); } catch(e){alert('Errore: '+e.message);} setSaving(false); };
+  // Salva ordine E scala magazzino
+  const saveOrder = async f => {
+    setSaving(true);
+    try {
+      const isNew = modal === 'new';
+      const qtaOrdine = n(f.qta);
+
+      if (isNew) {
+        // Scala grammi dal magazzino
+        if (f.prodottoMagazzinoId) {
+          const magProd = magazzino.find(m=>m.id===f.prodottoMagazzinoId);
+          if (magProd) {
+            const nuovaQt = Math.max(0, n(magProd.quantita) - qtaOrdine);
+            await magazzinoCol.update(magProd.id, { quantita: nuovaQt });
+          }
+        }
+        await add(f);
+      } else {
+        // In modifica: ri-calcola differenza grammi se stesso prodotto
+        const vecchioOrdine = selected;
+        const vecchiaQta = n(vecchioOrdine.qta);
+        const nuovaQta   = qtaOrdine;
+        const delta = nuovaQta - vecchiaQta;
+
+        if (f.prodottoMagazzinoId && delta !== 0) {
+          const magProd = magazzino.find(m=>m.id===f.prodottoMagazzinoId);
+          if (magProd) {
+            const nuovaQt = Math.max(0, n(magProd.quantita) - delta);
+            await magazzinoCol.update(magProd.id, { quantita: nuovaQt });
+          }
+        }
+        await update(selected.id, f);
+      }
+      setModal(null);
+    } catch(e){ alert('Errore: '+e.message); }
+    setSaving(false);
+  };
+
+  // Cancella ordine E rimette grammi in magazzino
+  const deleteOrder = async () => {
+    setSaving(true);
+    try {
+      // Rimetti grammi in magazzino
+      if (selected.prodottoMagazzinoId) {
+        const magProd = magazzino.find(m=>m.id===selected.prodottoMagazzinoId);
+        if (magProd) {
+          const nuovaQt = n(magProd.quantita) + n(selected.qta);
+          await magazzinoCol.update(magProd.id, { quantita: nuovaQt });
+        }
+      }
+      await remove(selected.id);
+      setModal(null);
+    } catch(e){ alert('Errore: '+e.message); }
+    setSaving(false);
+  };
 
   return (<div>
     <div className="page-header">
       <div>
         <div className="page-title">Ordini</div>
-        <div className="page-subtitle">
-          {filtered.length} ordini • {fmtG(totGrammi)} • Fatturato: {fmt(totFatturato)} • Ricavo netto: <span style={{color:'var(--green)'}}>{fmt(totMargine)}</span>
-        </div>
+        <div className="page-subtitle">{filtered.length} ordini • {fmtG(totGrammi)} • Fatturato: {fmt(totFatturato)} • Ricavo: <span style={{color:'var(--green)'}}>{fmt(totMargine)}</span></div>
       </div>
       <button className="btn btn-primary" onClick={()=>{setSelected(null);setModal('new')}}>+ Nuovo Ordine</button>
     </div>
@@ -691,18 +1017,11 @@ function OrdiniPage({ col }) {
             <th>#</th><th>Cliente</th><th>Prodotto</th><th>Grammi</th><th>P.Vendita/g</th><th>P.Costo/g</th><th>Fatturato</th><th>Ricavo Netto</th><th>Stato</th><th>Data</th><th></th>
           </tr></thead>
           <tbody>{filtered.map((o,i)=>{
-            const m = calcMargine(o);
-            const tv = calcFatturato(o);
+            const m=calcMargine(o), tv=calcFatturato(o);
             return (<tr key={o.id}>
               <td><span className="tag mono">{String(i+1).padStart(3,'0')}</span></td>
-              <td>
-                <div style={{fontWeight:'600'}}>{o.cliente}</div>
-                {o.telefono&&<div style={{fontSize:'11px',color:'var(--text3)',fontFamily:'var(--mono)'}}>{o.telefono}</div>}
-              </td>
-              <td style={{maxWidth:'130px'}}>
-                <div style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{o.prodotto}</div>
-                {o.note&&<div style={{fontSize:'11px',color:'var(--text3)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{o.note}</div>}
-              </td>
+              <td><div style={{fontWeight:'600'}}>{o.cliente}</div>{o.telefono&&<div style={{fontSize:'11px',color:'var(--text3)',fontFamily:'var(--mono)'}}>{o.telefono}</div>}</td>
+              <td style={{maxWidth:'130px'}}><div style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{o.prodotto}</div>{o.note&&<div style={{fontSize:'11px',color:'var(--text3)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{o.note}</div>}</td>
               <td className="mono" style={{color:'var(--accent)'}}>{fmtG(o.qta)}</td>
               <td className="mono">{fmt(o.prezzoVendita)}</td>
               <td className="mono" style={{color:'var(--text2)'}}>{n(o.prezzoCosto)>0?fmt(o.prezzoCosto):'—'}</td>
@@ -720,11 +1039,11 @@ function OrdiniPage({ col }) {
       }
     </div>
     <Modal open={modal==='new'||modal==='edit'} onClose={()=>setModal(null)}>
-      <OrderForm initial={selected} onSave={saveOrder} onClose={()=>setModal(null)} title={modal==='new'?'Nuovo Ordine':'Modifica Ordine'} saving={saving}/>
+      <OrderForm initial={selected} onSave={saveOrder} onClose={()=>setModal(null)} title={modal==='new'?'Nuovo Ordine':'Modifica Ordine'} saving={saving} magazzino={magazzino}/>
     </Modal>
     <Modal open={modal==='delete'} onClose={()=>setModal(null)}>
-      <h2>Elimina Ordine</h2><div className="modal-sub">Questa azione non può essere annullata</div>
-      <div className="confirm-box"><p>Elimina ordine di <strong>{selected?.cliente}</strong> — <strong>{selected?.prodotto}</strong>?</p></div>
+      <h2>Elimina Ordine</h2><div className="modal-sub">I grammi verranno restituiti al magazzino</div>
+      <div className="confirm-box"><p>Elimina ordine di <strong>{selected?.cliente}</strong> — <strong>{selected?.prodotto}</strong> ({fmtG(selected?.qta)})?<br/>I grammi torneranno disponibili in magazzino.</p></div>
       <div className="form-actions">
         <button className="btn btn-ghost" onClick={()=>setModal(null)} disabled={saving}>Annulla</button>
         <button className="btn btn-danger" onClick={deleteOrder} disabled={saving}>{saving?'⏳...':'⌫ Elimina'}</button>
@@ -736,23 +1055,18 @@ function OrdiniPage({ col }) {
 // ─── FINANZA PAGE ─────────────────────────────────────────────────────────
 function FinanzaPage({ col, orders }) {
   const { data: movimenti, add, update, remove } = col;
-  const [modal, setModal] = useState(null);
+  const [modal, setModal]     = useState(null);
   const [selected, setSelected] = useState(null);
-  const [search, setSearch] = useState('');
+  const [saving, setSaving]   = useState(false);
+
+  const ricavoOrdini = orders.reduce((s,o)=>s+calcMargine(o),0);
+  const costoOrdini  = orders.reduce((s,o)=>s+calcCostoTot(o),0);
+  const movEntrate   = movimenti.filter(m=>m.tipo==='entrata').reduce((s,m)=>s+n(m.importo),0);
+  const movUscite    = movimenti.filter(m=>m.tipo==='uscita').reduce((s,m)=>s+n(m.importo),0);
+  const saldoTotale  = ricavoOrdini + movEntrate - movUscite;
+
+  const [search, setSearch]     = useState('');
   const [filterTipo, setFilterTipo] = useState('');
-  const [saving, setSaving] = useState(false);
-
-  // Ricavo automatico dagli ordini
-  const ricavoOrdini = orders.reduce((s,o)=>s+calcMargine(o), 0);
-  const costoOrdini  = orders.reduce((s,o)=>s+calcCostoTot(o), 0);
-
-  // Movimenti extra
-  const movEntrate = movimenti.filter(m=>m.tipo==='entrata').reduce((s,m)=>s+n(m.importo),0);
-  const movUscite  = movimenti.filter(m=>m.tipo==='uscita').reduce((s,m)=>s+n(m.importo),0);
-
-  // Saldo totale = ricavo ordini + movimenti entrate - movimenti uscite
-  const saldoTotale = ricavoOrdini + movEntrate - movUscite;
-
   const filtered = useMemo(()=>movimenti.filter(m=>{
     const s=search.toLowerCase();
     return(!s||m.descrizione?.toLowerCase().includes(s)||m.categoria?.toLowerCase().includes(s))&&(!filterTipo||m.tipo===filterTipo);
@@ -763,33 +1077,15 @@ function FinanzaPage({ col, orders }) {
 
   return (<div>
     <div className="page-header">
-      <div><div className="page-title">Finanza</div>
-        <div className="page-subtitle">Saldo totale: <span style={{color:saldoTotale>=0?'var(--green)':'var(--red)'}}>{fmt(saldoTotale)}</span></div>
-      </div>
+      <div><div className="page-title">Finanza</div><div className="page-subtitle">Saldo totale: <span style={{color:saldoTotale>=0?'var(--green)':'var(--red)'}}>{fmt(saldoTotale)}</span></div></div>
       <button className="btn btn-primary" onClick={()=>{setSelected(null);setModal('new')}}>+ Movimento Extra</button>
     </div>
-
-    {/* KPI finanza */}
-    <div className="kpi-grid" style={{gridTemplateColumns:'repeat(3,1fr)',marginBottom:'20px'}}>
-      <div className="kpi-card green">
-        <div className="kpi-label">Ricavo da Ordini</div>
-        <div className={`kpi-value ${ricavoOrdini>=0?'green':'red'}`}>{fmt(ricavoOrdini)}</div>
-        <div className="kpi-sub">{orders.length} ordini • costo {fmt(costoOrdini)}</div>
-      </div>
-      <div className="kpi-card gold">
-        <div className="kpi-label">Movimenti Extra</div>
-        <div className="kpi-value gold">{fmt(movEntrate - movUscite)}</div>
-        <div className="kpi-sub">+{fmt(movEntrate)} / -{fmt(movUscite)}</div>
-      </div>
-      <div className="kpi-card blue">
-        <div className="kpi-label">Saldo Totale</div>
-        <div className={`kpi-value ${saldoTotale>=0?'green':'red'}`}>{fmt(saldoTotale)}</div>
-        <div className="kpi-sub">{saldoTotale>=0?'✓ in attivo':'✗ in passivo'}</div>
-      </div>
+    <div className="kpi-grid" style={{gridTemplateColumns:'repeat(3,1fr)'}}>
+      <div className="kpi-card green"><div className="kpi-label">Ricavo da Ordini</div><div className={`kpi-value ${ricavoOrdini>=0?'green':'red'}`}>{fmt(ricavoOrdini)}</div><div className="kpi-sub">{orders.length} ordini • costo {fmt(costoOrdini)}</div></div>
+      <div className="kpi-card gold"><div className="kpi-label">Movimenti Extra</div><div className="kpi-value gold">{fmt(movEntrate-movUscite)}</div><div className="kpi-sub">+{fmt(movEntrate)} / -{fmt(movUscite)}</div></div>
+      <div className="kpi-card blue"><div className="kpi-label">Saldo Totale</div><div className={`kpi-value ${saldoTotale>=0?'green':'red'}`}>{fmt(saldoTotale)}</div><div className="kpi-sub">{saldoTotale>=0?'✓ in attivo':'✗ in passivo'}</div></div>
     </div>
-
-    {/* Tabella movimenti extra */}
-    <div className="section-title" style={{marginBottom:'12px'}}>Movimenti Manuali Extra <span>separati dal ricavo automatico degli ordini</span></div>
+    <div className="section-title" style={{marginTop:'20px',marginBottom:'12px'}}>Movimenti Manuali Extra <span>separati dal ricavo automatico degli ordini</span></div>
     <div className="table-container">
       <div className="table-toolbar">
         <div className="search-box"><span style={{color:'var(--text3)'}}>⌕</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Cerca..."/></div>
@@ -798,7 +1094,7 @@ function FinanzaPage({ col, orders }) {
         </select>
       </div>
       {filtered.length===0
-        ? <div className="empty-state"><div className="icon">💰</div><p>Nessun movimento extra registrato</p></div>
+        ? <div className="empty-state"><div className="icon">💰</div><p>Nessun movimento extra</p></div>
         : <div style={{overflowX:'auto'}}>
           <table><thead><tr><th>Tipo</th><th>Descrizione</th><th>Categoria</th><th>Importo</th><th>Data</th><th>Note</th><th></th></tr></thead>
           <tbody>{filtered.map(m=>(
@@ -836,6 +1132,7 @@ function FinanzaPage({ col, orders }) {
 function App() {
   const ordersCol    = useFirestoreCollection('ordini');
   const movimentiCol = useFirestoreCollection('movimenti');
+  const magazzinoCol = useFirestoreCollection('magazzino');
   const [page, setPage]     = useState('dashboard');
   const [online, setOnline] = useState(navigator.onLine);
 
@@ -845,7 +1142,7 @@ function App() {
     return()=>{ window.removeEventListener('online',up); window.removeEventListener('offline',dn); };
   },[]);
 
-  if (!ordersCol.ready || !movimentiCol.ready) return (
+  if (!ordersCol.ready || !movimentiCol.ready || !magazzinoCol.ready) return (
     <div className="loading-screen">
       <div className="spinner"></div>
       <div className="loading-text">CONNESSIONE A FIREBASE...</div>
@@ -853,9 +1150,13 @@ function App() {
   );
 
   const totAttivi = ordersCol.data.filter(o=>!['consegnato','annullato'].includes(o.stato)).length;
+  const esauriti  = magazzinoCol.data.filter(m=>n(m.quantita)<=0).length;
+  const scarseProd= magazzinoCol.data.filter(m=>n(m.quantita)>0&&n(m.quantita)<10).length;
+
   const navItems = [
     { id:'dashboard', icon:'◈', label:'Dashboard' },
-    { id:'ordini',    icon:'📋', label:'Ordini', badge: totAttivi||null },
+    { id:'ordini',    icon:'📋', label:'Ordini',    badge: totAttivi||null },
+    { id:'magazzino', icon:'📦', label:'Magazzino', badge: (esauriti+scarseProd)||null, badgeCls: esauriti>0?'red':'' },
     { id:'finanza',   icon:'💰', label:'Finanza' },
   ];
 
@@ -864,14 +1165,14 @@ function App() {
       <aside className="sidebar">
         <div className="logo">
           <div className="logo-mark">Sistema</div>
-          <h1>Gestionale<em>.</em><span className={`sync-dot${online?'':' offline'}`} title={online?'Sincronizzato':'Offline'}></span></h1>
+          <h1>Gestionale<em>.</em><span className={`sync-dot${online?'':' offline'}`}></span></h1>
         </div>
         <nav className="nav">
           <div className="nav-section">Menu</div>
           {navItems.map(item=>(
             <div key={item.id} className={`nav-item${page===item.id?' active':''}`} onClick={()=>setPage(item.id)}>
               <span className="icon">{item.icon}</span>{item.label}
-              {item.badge?<span className="nav-badge">{item.badge}</span>:null}
+              {item.badge?<span className={`nav-badge${item.badgeCls?' '+item.badgeCls:''}`}>{item.badge}</span>:null}
             </div>
           ))}
         </nav>
@@ -882,8 +1183,9 @@ function App() {
         </div>
       </aside>
       <main className="main">
-        {page==='dashboard' && <Dashboard orders={ordersCol.data} movimenti={movimentiCol.data}/>}
-        {page==='ordini'    && <OrdiniPage col={ordersCol}/>}
+        {page==='dashboard' && <Dashboard orders={ordersCol.data} movimenti={movimentiCol.data} magazzino={magazzinoCol.data}/>}
+        {page==='ordini'    && <OrdiniPage col={ordersCol} magazzino={magazzinoCol.data} magazzinoCol={magazzinoCol}/>}
+        {page==='magazzino' && <MagazzinoPage col={magazzinoCol}/>}
         {page==='finanza'   && <FinanzaPage col={movimentiCol} orders={ordersCol.data}/>}
       </main>
     </div>
