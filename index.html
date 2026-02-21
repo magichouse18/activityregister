@@ -6,7 +6,6 @@
 <title>Gestionale Ordini</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -41,36 +40,14 @@
     --font: 'Inter', system-ui, sans-serif;
     --mono: 'JetBrains Mono', monospace;
   }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 14px;
-    line-height: 1.5;
-    min-height: 100vh;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    font-stretch: normal;
-  }
-
-  body::before {
-    content: ''; position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 9999; opacity: 0.35;
-  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.5; min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.35; }
 
   .layout { display: flex; height: 100vh; }
 
-  /* ── SIDEBAR ── */
-  .sidebar {
-    width: 230px; background: var(--bg2); border-right: 1px solid var(--border);
-    display: flex; flex-direction: column; padding: 24px 0; flex-shrink: 0; position: relative;
-  }
-  .sidebar::after {
-    content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 1px;
-    background: linear-gradient(to bottom, transparent, var(--accent), transparent); opacity: 0.25;
-  }
+  /* SIDEBAR */
+  .sidebar { width: 230px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 24px 0; flex-shrink: 0; position: relative; }
+  .sidebar::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, transparent, var(--accent), transparent); opacity: 0.25; }
   .logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); }
   .logo-mark { font-size: 10px; font-family: var(--mono); color: var(--accent); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; }
   .logo h1 { font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.2; display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px; }
@@ -78,7 +55,6 @@
   .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; flex-shrink: 0; }
   .sync-dot.offline { background: var(--red); animation: none; }
   @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
-
   .nav { padding: 16px 12px; flex: 1; }
   .nav-section { font-size: 10px; letter-spacing: 2px; color: var(--text3); text-transform: uppercase; font-family: var(--mono); padding: 0 8px; margin: 14px 0 6px; }
   .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s; color: var(--text2); font-size: 13px; font-weight: 500; border: 1px solid transparent; margin-bottom: 2px; }
@@ -86,25 +62,22 @@
   .nav-item.active { background: rgba(201,168,76,0.1); color: var(--accent); border-color: rgba(201,168,76,0.2); }
   .nav-item .icon { font-size: 15px; width: 18px; text-align: center; }
   .nav-badge { margin-left: auto; background: var(--accent); color: #000; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; font-family: var(--mono); }
-
   .sidebar-footer { padding: 14px 20px; border-top: 1px solid var(--border); }
-  .sidebar-footer .label { font-size: 9px; color: var(--text3); font-family: var(--mono); letter-spacing: 1.5px; text-transform: uppercase; }
-  .sidebar-footer .value { font-size: 22px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; line-height: 1.2; }
+  .sidebar-footer .sf-label { font-size: 9px; color: var(--text3); font-family: var(--mono); letter-spacing: 1.5px; text-transform: uppercase; }
+  .sidebar-footer .sf-value { font-size: 22px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; line-height: 1.2; }
   .live-badge { font-size: 9px; font-family: var(--mono); letter-spacing: 1px; margin-top: 4px; }
-  .live-badge.on { color: var(--green); }
-  .live-badge.off { color: var(--red); }
+  .live-badge.on { color: var(--green); } .live-badge.off { color: var(--red); }
 
-  /* ── MAIN ── */
+  /* MAIN */
   .main { flex: 1; overflow-y: auto; padding: 28px 32px; }
   .main::-webkit-scrollbar { width: 5px; }
   .main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-  .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
   .page-title { font-size: 24px; font-weight: 800; color: var(--text); line-height: 1; letter-spacing: -0.5px; }
   .page-subtitle { font-size: 12px; color: var(--text2); margin-top: 5px; font-family: var(--mono); }
 
-  /* ── BUTTONS ── */
-  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--radius-sm); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; letter-spacing: 0; }
+  /* BUTTONS */
+  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--radius-sm); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-primary { background: var(--accent); color: #000; }
   .btn-primary:hover:not(:disabled) { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,168,76,0.3); }
@@ -114,8 +87,8 @@
   .btn-danger:hover:not(:disabled) { background: rgba(224,82,82,0.22); }
   .btn-sm { padding: 5px 11px; font-size: 12px; }
 
-  /* ── KPI GRID ── */
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+  /* KPI */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
   .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
   .kpi-card:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-1px); }
   .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
@@ -125,22 +98,18 @@
   .kpi-card.blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
   .kpi-card.purple::before { background: linear-gradient(90deg, var(--purple), transparent); }
   .kpi-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); font-family: var(--mono); margin-bottom: 10px; }
-  .kpi-value { font-size: 26px; font-weight: 800; line-height: 1; margin-bottom: 6px; letter-spacing: -1px; }
-  .kpi-value.gold { color: var(--accent); }
-  .kpi-value.green { color: var(--green); }
-  .kpi-value.red { color: var(--red); }
-  .kpi-value.purple { color: var(--purple); }
+  .kpi-value { font-size: 24px; font-weight: 800; line-height: 1; margin-bottom: 6px; letter-spacing: -1px; }
+  .kpi-value.gold { color: var(--accent); } .kpi-value.green { color: var(--green); } .kpi-value.red { color: var(--red); } .kpi-value.purple { color: var(--purple); }
   .kpi-sub { font-size: 11px; color: var(--text3); font-family: var(--mono); }
-  .kpi-icon { position: absolute; right: 14px; top: 14px; font-size: 26px; opacity: 0.1; }
+  .kpi-icon { position: absolute; right: 14px; top: 14px; font-size: 24px; opacity: 0.1; }
 
-  /* ── TABLE ── */
+  /* TABLE */
   .table-container { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
   .table-toolbar { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .search-box { display: flex; align-items: center; gap: 8px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 13px; flex: 1; min-width: 180px; }
   .search-box input { background: none; border: none; color: var(--text); font-family: var(--font); font-size: 13px; outline: none; width: 100%; }
   .search-box input::placeholder { color: var(--text3); }
   .filter-select { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); font-family: var(--font); font-size: 12px; padding: 8px 11px; border-radius: var(--radius-sm); outline: none; cursor: pointer; }
-
   table { width: 100%; border-collapse: collapse; }
   thead { background: var(--bg3); border-bottom: 1px solid var(--border); }
   th { padding: 10px 16px; text-align: left; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); font-family: var(--mono); font-weight: 500; white-space: nowrap; }
@@ -148,7 +117,7 @@
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: rgba(255,255,255,0.015); }
 
-  /* ── BADGES ── */
+  /* STATUS */
   .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; font-family: var(--mono); white-space: nowrap; }
   .status-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
   .s-nuovo { background: rgba(76,125,207,0.12); color: var(--blue); }
@@ -163,7 +132,7 @@
   .mono { font-family: var(--mono); }
   .action-btns { display: flex; gap: 5px; }
 
-  /* ── MODAL ── */
+  /* MODAL */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.15s ease; }
   @keyframes fadeIn { from{opacity:0}to{opacity:1} }
   .modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 100%; max-width: 560px; animation: slideUp 0.2s ease; max-height: 92vh; overflow-y: auto; }
@@ -173,46 +142,50 @@
   .modal::-webkit-scrollbar { width: 4px; }
   .modal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-  /* ── FORM ── */
+  /* FORM */
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .form-group { display: flex; flex-direction: column; gap: 5px; }
   .form-group.full { grid-column: 1/-1; }
-  .form-group.third { grid-column: span 1; }
   .form-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); font-family: var(--mono); }
   .form-input, .form-select, .form-textarea { background: var(--bg3); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: 13px; padding: 9px 13px; border-radius: var(--radius-sm); outline: none; transition: border-color 0.15s; width: 100%; }
   .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
   .form-textarea { resize: vertical; min-height: 72px; }
   .form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
 
-  /* Margine preview nel form */
-  .margin-preview {
-    grid-column: 1/-1;
-    background: rgba(76,175,130,0.07);
-    border: 1px solid rgba(76,175,130,0.2);
-    border-radius: var(--radius-sm);
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .margin-preview.loss {
-    background: rgba(224,82,82,0.07);
-    border-color: rgba(224,82,82,0.2);
-  }
-  .margin-preview-label { font-size: 11px; color: var(--text3); font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; }
-  .margin-preview-value { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
-  .margin-preview-value.pos { color: var(--green); }
-  .margin-preview-value.neg { color: var(--red); }
-  .margin-preview-detail { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+  /* Input con unità */
+  .input-unit-wrap { position: relative; }
+  .input-unit-wrap .form-input { padding-right: 42px; }
+  .input-unit { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--text3); font-family: var(--mono); pointer-events: none; }
 
-  /* ── FINANZA ── */
+  /* Margine preview */
+  .margin-preview { grid-column: 1/-1; background: rgba(76,175,130,0.07); border: 1px solid rgba(76,175,130,0.2); border-radius: var(--radius-sm); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .margin-preview.loss { background: rgba(224,82,82,0.07); border-color: rgba(224,82,82,0.2); }
+  .margin-preview-left { display: flex; flex-direction: column; gap: 3px; }
+  .margin-preview-label { font-size: 10px; color: var(--text3); font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; }
+  .margin-preview-detail { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+  .margin-preview-value { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+  .margin-preview-value.pos { color: var(--green); } .margin-preview-value.neg { color: var(--red); }
+
+  /* SECTION TITLE */
+  .section-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .section-title span { font-size: 10px; color: var(--text3); font-family: var(--mono); font-weight: 400; }
+
+  /* MONTHLY CHART */
+  .monthly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .month-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .month-card h3 { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); font-family: var(--mono); margin-bottom: 16px; }
+
+  .month-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .month-bar-label { font-size: 11px; color: var(--text2); font-family: var(--mono); width: 36px; flex-shrink: 0; }
+  .month-bar-track { flex: 1; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .month-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+  .month-bar-val { font-size: 11px; font-family: var(--mono); width: 80px; text-align: right; flex-shrink: 0; }
+
+  /* MISC */
+  .dash-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
   .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
   .fin-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
   .fin-card h3 { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); font-family: var(--mono); margin-bottom: 14px; }
-
-  /* ── MISC ── */
   .empty-state { text-align: center; padding: 56px 20px; color: var(--text3); }
   .empty-state .icon { font-size: 36px; margin-bottom: 14px; opacity: 0.4; }
   .empty-state p { font-size: 13px; }
@@ -231,12 +204,12 @@
   @keyframes spin { to{transform:rotate(360deg)} }
   .loading-text { font-size: 12px; color: var(--text3); font-family: var(--mono); letter-spacing: 2px; }
 
-  /* dashboard two-col */
-  .dash-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  /* year selector */
+  .year-select { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); font-family: var(--mono); font-size: 11px; padding: 4px 8px; border-radius: 6px; outline: none; cursor: pointer; }
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } .sidebar { width: 200px; } .main { padding: 20px 16px; } }
+  /* RESPONSIVE */
+  @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 900px) { .sidebar { width: 200px; } .main { padding: 20px 16px; } .monthly-grid { grid-template-columns: 1fr; } .dash-row { grid-template-columns: 1fr; } }
   @media (max-width: 660px) {
     .layout { flex-direction: column; height: auto; min-height: 100vh; }
     .sidebar { width: 100%; padding: 14px 0; }
@@ -252,22 +225,27 @@
     .form-group.full { grid-column: 1; }
     th, td { padding: 9px 11px; font-size: 12px; }
     .main { padding: 14px; }
-    .dash-bottom { grid-template-columns: 1fr; }
+    .monthly-grid { grid-template-columns: 1fr; }
+    .dash-row { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 <div id="root"></div>
-
 <script type="text/babel">
 const { useState, useEffect, useMemo, useCallback, useRef } = React;
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────
 const n = v => parseFloat(v) || 0;
 const fmt = v => `€ ${n(v).toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+const fmtG = v => `${n(v).toLocaleString('it-IT')} g`;
 const fmtDate = d => d ? new Date(d).toLocaleDateString('it-IT') : '—';
-const margine = o => (n(o.prezzoVendita) - n(o.prezzoCosto)) * n(o.qta || 1);
-const totaleVendita = o => n(o.prezzoVendita) * n(o.qta || 1);
+const calcMargine = o => (n(o.prezzoVendita) - n(o.prezzoCosto)) * n(o.qta || 1);
+const calcFatturato = o => n(o.prezzoVendita) * n(o.qta || 1);
+const calcCostoTot = o => n(o.prezzoCosto) * n(o.qta || 1);
+
+const MESI = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+const MESI_FULL = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 
 const STATUS_MAP = {
   nuovo:       { label: 'Nuovo',          cls: 's-nuovo' },
@@ -282,12 +260,10 @@ function useFirestoreCollection(name) {
   const [data, setData] = useState([]);
   const [ready, setReady] = useState(false);
   const unsubRef = useRef(null);
-
   useEffect(() => {
     const init = () => {
       const { collection, onSnapshot } = window._firebase;
-      const db = window._db;
-      unsubRef.current = onSnapshot(collection(db, name), snap => {
+      unsubRef.current = onSnapshot(collection(window._db, name), snap => {
         setData(snap.docs.map(d => ({ id: d.id, ...d.data() })));
         setReady(true);
       }, () => setReady(true));
@@ -296,11 +272,9 @@ function useFirestoreCollection(name) {
     else window.addEventListener('firebaseReady', init, { once: true });
     return () => { if (unsubRef.current) unsubRef.current(); };
   }, [name]);
-
   const add    = useCallback(async item => { const {collection,addDoc}=window._firebase; await addDoc(collection(window._db,name),{...item,_ts:Date.now()}); },[name]);
   const update = useCallback(async (id,item) => { const {doc,updateDoc}=window._firebase; await updateDoc(doc(window._db,name,id),item); },[name]);
   const remove = useCallback(async id => { const {doc,deleteDoc}=window._firebase; await deleteDoc(doc(window._db,name,id)); },[name]);
-
   return { data, ready, add, update, remove };
 }
 
@@ -316,17 +290,17 @@ function Modal({ open, onClose, children }) {
 
 // ─── ORDER FORM ───────────────────────────────────────────────────────────
 function OrderForm({ initial, onSave, onClose, title, saving }) {
-  const empty = { cliente:'', prodotto:'', qta:'1', prezzoVendita:'', prezzoCosto:'', stato:'nuovo', data:new Date().toISOString().split('T')[0], note:'', telefono:'', indirizzo:'' };
+  const empty = { cliente:'', prodotto:'', qta:'', prezzoVendita:'', prezzoCosto:'', stato:'nuovo', data:new Date().toISOString().split('T')[0], note:'', telefono:'', indirizzo:'' };
   const [f, setF] = useState(initial || empty);
   const set = k => e => setF(p=>({...p,[k]:e.target.value}));
 
-  const qta   = n(f.qta) || 1;
-  const vend  = n(f.prezzoVendita);
-  const costo = n(f.prezzoCosto);
-  const marg  = (vend - costo) * qta;
-  const totV  = vend * qta;
-  const totC  = costo * qta;
-  const hasValues = vend > 0 || costo > 0;
+  const qta  = n(f.qta);
+  const vend = n(f.prezzoVendita);
+  const cost = n(f.prezzoCosto);
+  const marg = (vend - cost) * (qta || 1);
+  const totV = vend * (qta || 1);
+  const totC = cost * (qta || 1);
+  const hasVals = vend > 0 || cost > 0;
 
   const save = () => {
     if (!f.cliente || !f.prodotto) return alert('Cliente e Prodotto sono obbligatori');
@@ -335,33 +309,57 @@ function OrderForm({ initial, onSave, onClose, title, saving }) {
 
   return (<>
     <h2>{title || 'Nuovo Ordine'}</h2>
-    <div className="modal-sub">Inserisci prezzi di vendita e di costo per calcolare il margine netto</div>
+    <div className="modal-sub">Inserisci quantità in grammi, prezzo di vendita e costo per calcolare il ricavo netto</div>
     <div className="form-grid">
       <div className="form-group"><label className="form-label">Cliente *</label><input className="form-input" value={f.cliente} onChange={set('cliente')} placeholder="Nome cliente"/></div>
       <div className="form-group"><label className="form-label">Telefono</label><input className="form-input" value={f.telefono} onChange={set('telefono')} placeholder="333 1234567"/></div>
       <div className="form-group full"><label className="form-label">Prodotto / Descrizione *</label><input className="form-input" value={f.prodotto} onChange={set('prodotto')} placeholder="Descrizione prodotto o servizio"/></div>
 
-      {/* Riga prezzi + quantità */}
-      <div className="form-group"><label className="form-label">Quantità</label><input className="form-input" type="number" value={f.qta} onChange={set('qta')} placeholder="1" min="1"/></div>
-      <div className="form-group"><label className="form-label">Prezzo di Vendita (€) *</label><input className="form-input" type="number" step="0.01" value={f.prezzoVendita} onChange={set('prezzoVendita')} placeholder="0.00 — quello che paga il cliente"/></div>
-      <div className="form-group"><label className="form-label">Prezzo di Costo (€)</label><input className="form-input" type="number" step="0.01" value={f.prezzoCosto} onChange={set('prezzoCosto')} placeholder="0.00 — quello che paghi tu"/></div>
-      <div className="form-group"><label className="form-label">Stato</label>
+      {/* Quantità in grammi */}
+      <div className="form-group">
+        <label className="form-label">Quantità (grammi)</label>
+        <div className="input-unit-wrap">
+          <input className="form-input" type="number" value={f.qta} onChange={set('qta')} placeholder="es. 50" min="0" step="0.1"/>
+          <span className="input-unit">g</span>
+        </div>
+      </div>
+
+      {/* Prezzo vendita */}
+      <div className="form-group">
+        <label className="form-label">Prezzo Vendita / g (€) *</label>
+        <div className="input-unit-wrap">
+          <input className="form-input" type="number" step="0.01" value={f.prezzoVendita} onChange={set('prezzoVendita')} placeholder="0.00"/>
+          <span className="input-unit">€/g</span>
+        </div>
+      </div>
+
+      {/* Prezzo costo */}
+      <div className="form-group">
+        <label className="form-label">Prezzo Costo / g (€)</label>
+        <div className="input-unit-wrap">
+          <input className="form-input" type="number" step="0.01" value={f.prezzoCosto} onChange={set('prezzoCosto')} placeholder="0.00"/>
+          <span className="input-unit">€/g</span>
+        </div>
+      </div>
+
+      <div className="form-group">
+        <label className="form-label">Stato</label>
         <select className="form-select" value={f.stato} onChange={set('stato')}>
           {Object.entries(STATUS_MAP).map(([k,v])=><option key={k} value={k}>{v.label}</option>)}
         </select>
       </div>
 
-      {/* Anteprima margine */}
-      {hasValues && (
-        <div className={`margin-preview${marg < 0 ? ' loss' : ''}`}>
-          <div>
-            <div className="margin-preview-label">Margine Netto</div>
+      {/* Preview margine */}
+      {hasVals && (
+        <div className={`margin-preview${marg<0?' loss':''}`}>
+          <div className="margin-preview-left">
+            <div className="margin-preview-label">Ricavo Netto</div>
             <div className="margin-preview-detail">
-              Vendita {fmt(totV)} − Costo {fmt(totC)}
+              Vendita {fmt(totV)} − Costo {fmt(totC)} ({qta||1} g)
             </div>
           </div>
-          <div className={`margin-preview-value ${marg >= 0 ? 'pos' : 'neg'}`}>
-            {marg >= 0 ? '+' : ''}{fmt(marg)}
+          <div className={`margin-preview-value ${marg>=0?'pos':'neg'}`}>
+            {marg>=0?'+':''}{fmt(marg)}
           </div>
         </div>
       )}
@@ -386,7 +384,7 @@ function MovimentoForm({ initial, onSave, onClose, title, saving }) {
   const cats = f.tipo==='entrata' ? ['Vendita','Servizi','Consulenza','Rimborso','Altro'] : ['Fornitore','Spedizione','Materiali','Utenze','Tasse','Software','Altro'];
   return (<>
     <h2>{title||'Nuovo Movimento'}</h2>
-    <div className="modal-sub">Registra entrata o uscita</div>
+    <div className="modal-sub">Registra entrata o uscita aggiuntiva rispetto agli ordini</div>
     <div className="form-grid">
       <div className="form-group"><label className="form-label">Tipo</label>
         <select className="form-select" value={f.tipo} onChange={set('tipo')}>
@@ -410,26 +408,164 @@ function MovimentoForm({ initial, onSave, onClose, title, saving }) {
   </>);
 }
 
+// ─── MONTHLY CHART COMPONENT ──────────────────────────────────────────────
+function MonthlyCharts({ orders, movimenti }) {
+  const currentYear = new Date().getFullYear();
+  const [year, setYear] = useState(currentYear);
+  const years = [currentYear - 1, currentYear, currentYear + 1];
+
+  // Ordini per mese: margine, grammi movimentati, num ordini
+  const monthlyOrders = useMemo(() => {
+    const months = Array.from({length:12}, (_,i) => ({ mese: MESI[i], margine:0, grammi:0, ordini:0, fatturato:0 }));
+    orders.forEach(o => {
+      const d = o.data ? new Date(o.data) : o._ts ? new Date(o._ts) : null;
+      if (!d || d.getFullYear() !== year) return;
+      const m = d.getMonth();
+      months[m].margine   += calcMargine(o);
+      months[m].grammi    += n(o.qta);
+      months[m].ordini    += 1;
+      months[m].fatturato += calcFatturato(o);
+    });
+    return months;
+  }, [orders, year]);
+
+  // Movimenti extra per mese
+  const monthlyMov = useMemo(() => {
+    const months = Array.from({length:12}, (_,i) => ({ mese: MESI[i], entrate:0, uscite:0 }));
+    movimenti.forEach(m => {
+      const d = m.data ? new Date(m.data) : m._ts ? new Date(m._ts) : null;
+      if (!d || d.getFullYear() !== year) return;
+      const idx = d.getMonth();
+      if (m.tipo==='entrata') months[idx].entrate += n(m.importo);
+      else months[idx].uscite += n(m.importo);
+    });
+    return months;
+  }, [movimenti, year]);
+
+  const maxMargine  = Math.max(...monthlyOrders.map(m=>m.margine), 1);
+  const maxGrammi   = Math.max(...monthlyOrders.map(m=>m.grammi), 1);
+  const maxMovTotal = Math.max(...monthlyMov.map(m=>m.entrate+m.uscite), 1);
+
+  return (
+    <div>
+      <div className="section-title">
+        Statistiche Mensili
+        <select className="year-select" value={year} onChange={e=>setYear(parseInt(e.target.value))}>
+          {years.map(y=><option key={y} value={y}>{y}</option>)}
+        </select>
+      </div>
+
+      <div className="monthly-grid">
+        {/* Margine mensile */}
+        <div className="month-card">
+          <h3>Ricavo Netto per Mese</h3>
+          {monthlyOrders.map((m,i) => (
+            <div key={i} className="month-bar-row">
+              <div className="month-bar-label">{m.mese}</div>
+              <div className="month-bar-track">
+                <div className="month-bar-fill" style={{width:`${Math.max(0,(m.margine/maxMargine)*100)}%`, background: m.margine>=0?'var(--green)':'var(--red)'}}></div>
+              </div>
+              <div className="month-bar-val" style={{color:m.margine>0?'var(--green)':m.margine<0?'var(--red)':'var(--text3)'}}>
+                {m.margine!==0?(m.margine>0?'+':'')+fmt(m.margine):'—'}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Grammi movimentati */}
+        <div className="month-card">
+          <h3>Grammi Movimentati per Mese</h3>
+          {monthlyOrders.map((m,i) => (
+            <div key={i} className="month-bar-row">
+              <div className="month-bar-label">{m.mese}</div>
+              <div className="month-bar-track">
+                <div className="month-bar-fill" style={{width:`${(m.grammi/maxGrammi)*100}%`, background:'var(--accent)'}}></div>
+              </div>
+              <div className="month-bar-val" style={{color: m.grammi>0?'var(--accent)':'var(--text3)'}}>
+                {m.grammi>0?fmtG(m.grammi):'—'}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Ordini per mese */}
+        <div className="month-card">
+          <h3>Numero Ordini per Mese</h3>
+          {monthlyOrders.map((m,i) => {
+            const maxOrd = Math.max(...monthlyOrders.map(x=>x.ordini), 1);
+            return (
+              <div key={i} className="month-bar-row">
+                <div className="month-bar-label">{m.mese}</div>
+                <div className="month-bar-track">
+                  <div className="month-bar-fill" style={{width:`${(m.ordini/maxOrd)*100}%`, background:'var(--blue)'}}></div>
+                </div>
+                <div className="month-bar-val" style={{color: m.ordini>0?'var(--blue)':'var(--text3)'}}>
+                  {m.ordini>0?`${m.ordini} ord.`:'—'}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Movimenti finanza per mese */}
+        <div className="month-card">
+          <h3>Movimenti Finanza per Mese</h3>
+          {monthlyMov.map((m,i) => (
+            <div key={i} style={{marginBottom:'8px'}}>
+              <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'3px'}}>
+                <div className="month-bar-label">{m.mese}</div>
+                <div style={{flex:1}}>
+                  {m.entrate>0 && (
+                    <div style={{display:'flex',alignItems:'center',gap:'6px',marginBottom:'2px'}}>
+                      <div style={{flex:1,height:'4px',background:'var(--bg3)',borderRadius:'2px',overflow:'hidden'}}>
+                        <div style={{width:`${(m.entrate/maxMovTotal)*100}%`,height:'100%',background:'var(--green)',borderRadius:'2px'}}></div>
+                      </div>
+                      <span style={{fontSize:'10px',color:'var(--green)',fontFamily:'var(--mono)',width:'60px',textAlign:'right'}}>+{fmt(m.entrate)}</span>
+                    </div>
+                  )}
+                  {m.uscite>0 && (
+                    <div style={{display:'flex',alignItems:'center',gap:'6px'}}>
+                      <div style={{flex:1,height:'4px',background:'var(--bg3)',borderRadius:'2px',overflow:'hidden'}}>
+                        <div style={{width:`${(m.uscite/maxMovTotal)*100}%`,height:'100%',background:'var(--red)',borderRadius:'2px'}}></div>
+                      </div>
+                      <span style={{fontSize:'10px',color:'var(--red)',fontFamily:'var(--mono)',width:'60px',textAlign:'right'}}>-{fmt(m.uscite)}</span>
+                    </div>
+                  )}
+                  {m.entrate===0&&m.uscite===0 && <span style={{fontSize:'10px',color:'var(--text3)',fontFamily:'var(--mono)'}}>—</span>}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── DASHBOARD ────────────────────────────────────────────────────────────
 function Dashboard({ orders, movimenti }) {
-  const totEntrate  = movimenti.filter(m=>m.tipo==='entrata').reduce((s,m)=>s+n(m.importo),0);
-  const totUscite   = movimenti.filter(m=>m.tipo==='uscita').reduce((s,m)=>s+n(m.importo),0);
-  const saldo       = totEntrate - totUscite;
+  // Calcoli globali
+  const fatturato   = orders.reduce((s,o)=>s+calcFatturato(o), 0);
+  const costoTotale = orders.reduce((s,o)=>s+calcCostoTot(o), 0);
+  const margTotale  = orders.reduce((s,o)=>s+calcMargine(o), 0);
   const totAttivi   = orders.filter(o=>!['consegnato','annullato'].includes(o.stato)).length;
+  const grammiTot   = orders.reduce((s,o)=>s+n(o.qta), 0);
 
-  // Margine netto totale da tutti gli ordini
-  const margTotale  = orders.reduce((s,o)=>s+margine(o), 0);
-  // Fatturato totale (prezzi di vendita)
-  const fatturato   = orders.reduce((s,o)=>s+totaleVendita(o), 0);
+  // Movimenti finanza extra
+  const movEntrate  = movimenti.filter(m=>m.tipo==='entrata').reduce((s,m)=>s+n(m.importo),0);
+  const movUscite   = movimenti.filter(m=>m.tipo==='uscita').reduce((s,m)=>s+n(m.importo),0);
+
+  // Saldo totale = margine ordini + movimenti extra entrate - movimenti extra uscite
+  const saldoTotale = margTotale + movEntrate - movUscite;
 
   const recent = [...orders].sort((a,b)=>(b._ts||0)-(a._ts||0)).slice(0,5);
   const statusCount = {};
   orders.forEach(o=>{statusCount[o.stato]=(statusCount[o.stato]||0)+1;});
 
   const clientiMap = {};
-  orders.forEach(o=>{ if(o.cliente) clientiMap[o.cliente]=(clientiMap[o.cliente]||0)+margine(o); });
+  orders.forEach(o=>{ if(o.cliente) clientiMap[o.cliente]=(clientiMap[o.cliente]||0)+calcMargine(o); });
   const topClienti = Object.entries(clientiMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const maxVal = topClienti[0]?.[1]||1;
+  const maxVal = Math.max(...topClienti.map(([,v])=>v), 1);
 
   return (<div>
     <div className="page-header">
@@ -439,16 +575,20 @@ function Dashboard({ orders, movimenti }) {
       </div>
     </div>
 
-    {/* KPI row 1 */}
-    <div className="kpi-grid" style={{gridTemplateColumns:'repeat(4,1fr)'}}>
-      <div className="kpi-card gold"><div className="kpi-icon">📋</div><div className="kpi-label">Totale Ordini</div><div className="kpi-value gold">{orders.length}</div><div className="kpi-sub">{totAttivi} attivi</div></div>
-      <div className="kpi-card green"><div className="kpi-icon">💰</div><div className="kpi-label">Fatturato Totale</div><div className="kpi-value green">{fmt(fatturato)}</div><div className="kpi-sub">da tutti gli ordini</div></div>
-      <div className="kpi-card purple"><div className="kpi-icon">📈</div><div className="kpi-label">Margine Netto</div><div className={`kpi-value ${margTotale>=0?'green':'red'}`}>{fmt(margTotale)}</div><div className="kpi-sub">vendita − costo</div></div>
-      <div className="kpi-card blue"><div className="kpi-icon">⚖</div><div className="kpi-label">Saldo Finanza</div><div className={`kpi-value ${saldo>=0?'green':'red'}`}>{fmt(saldo)}</div><div className="kpi-sub">{movimenti.length} movimenti</div></div>
+    {/* KPI principali */}
+    <div className="kpi-grid">
+      <div className="kpi-card gold"><div className="kpi-icon">📋</div><div className="kpi-label">Totale Ordini</div><div className="kpi-value gold">{orders.length}</div><div className="kpi-sub">{totAttivi} attivi • {fmtG(grammiTot)} tot.</div></div>
+      <div className="kpi-card green"><div className="kpi-icon">💰</div><div className="kpi-label">Fatturato</div><div className="kpi-value green">{fmt(fatturato)}</div><div className="kpi-sub">Costo: {fmt(costoTotale)}</div></div>
+      <div className="kpi-card purple"><div className="kpi-icon">📈</div><div className="kpi-label">Ricavo Netto Ordini</div><div className={`kpi-value ${margTotale>=0?'green':'red'}`}>{fmt(margTotale)}</div><div className="kpi-sub">vendita − costo</div></div>
+      <div className="kpi-card blue"><div className="kpi-icon">⚖</div>
+        <div className="kpi-label">Saldo Totale</div>
+        <div className={`kpi-value ${saldoTotale>=0?'green':'red'}`}>{fmt(saldoTotale)}</div>
+        <div className="kpi-sub">ordini + finanza extra</div>
+      </div>
     </div>
 
-    <div className="dash-bottom">
-      {/* Ordini recenti */}
+    {/* Ordini recenti + top clienti */}
+    <div className="dash-row">
       <div className="table-container">
         <div className="table-toolbar" style={{justifyContent:'space-between'}}>
           <span style={{fontSize:'13px',fontWeight:'700'}}>Ordini Recenti</span>
@@ -456,12 +596,13 @@ function Dashboard({ orders, movimenti }) {
         </div>
         {recent.length===0
           ? <div className="empty-state"><div className="icon">📦</div><p>Nessun ordine ancora</p></div>
-          : <table><thead><tr><th>Cliente</th><th>Prodotto</th><th>Margine</th><th>Stato</th></tr></thead>
+          : <table><thead><tr><th>Cliente</th><th>Prodotto</th><th>Grammi</th><th>Ricavo</th><th>Stato</th></tr></thead>
             <tbody>{recent.map(o=>{
-              const m = margine(o);
+              const m = calcMargine(o);
               return (<tr key={o.id}>
                 <td style={{fontWeight:'600'}}>{o.cliente}</td>
-                <td style={{color:'var(--text2)',maxWidth:'110px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{o.prodotto}</td>
+                <td style={{color:'var(--text2)',maxWidth:'100px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{o.prodotto}</td>
+                <td className="mono" style={{color:'var(--accent)'}}>{fmtG(o.qta)}</td>
                 <td className={m>=0?'amount-pos':'amount-neg'}>{m>=0?'+':''}{fmt(m)}</td>
                 <td><span className={`status-badge ${STATUS_MAP[o.stato]?.cls}`}>{STATUS_MAP[o.stato]?.label}</span></td>
               </tr>);
@@ -469,11 +610,9 @@ function Dashboard({ orders, movimenti }) {
         }
       </div>
 
-      {/* Colonna destra */}
       <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
-        {/* Top clienti per margine */}
         <div className="fin-card" style={{padding:'18px'}}>
-          <h3>Top Clienti per Margine</h3>
+          <h3>Top Clienti per Ricavo</h3>
           {topClienti.length===0
             ? <div style={{color:'var(--text3)',fontSize:'12px',textAlign:'center',padding:'14px'}}>Nessun dato</div>
             : topClienti.map(([name,val])=>(
@@ -485,8 +624,6 @@ function Dashboard({ orders, movimenti }) {
             ))
           }
         </div>
-
-        {/* Conteggio stati */}
         {orders.length>0 && (
           <div className="fin-card" style={{padding:'18px'}}>
             <h3>Stato Ordini</h3>
@@ -502,6 +639,9 @@ function Dashboard({ orders, movimenti }) {
         )}
       </div>
     </div>
+
+    {/* Grafici mensili */}
+    <MonthlyCharts orders={orders} movimenti={movimenti} />
   </div>);
 }
 
@@ -519,8 +659,9 @@ function OrdiniPage({ col }) {
     return (!s||o.cliente?.toLowerCase().includes(s)||o.prodotto?.toLowerCase().includes(s))&&(!filterStato||o.stato===filterStato);
   }).sort((a,b)=>(b._ts||0)-(a._ts||0)),[orders,search,filterStato]);
 
-  const totFatturato = filtered.reduce((s,o)=>s+totaleVendita(o),0);
-  const totMargine   = filtered.reduce((s,o)=>s+margine(o),0);
+  const totFatturato = filtered.reduce((s,o)=>s+calcFatturato(o),0);
+  const totMargine   = filtered.reduce((s,o)=>s+calcMargine(o),0);
+  const totGrammi    = filtered.reduce((s,o)=>s+n(o.qta),0);
 
   const saveOrder = async f => { setSaving(true); try { if(modal==='new') await add(f); else await update(selected.id,f); setModal(null); } catch(e){alert('Errore: '+e.message);} setSaving(false); };
   const deleteOrder = async () => { setSaving(true); try { await remove(selected.id); setModal(null); } catch(e){alert('Errore: '+e.message);} setSaving(false); };
@@ -529,7 +670,9 @@ function OrdiniPage({ col }) {
     <div className="page-header">
       <div>
         <div className="page-title">Ordini</div>
-        <div className="page-subtitle">{filtered.length} ordini • Fatturato: {fmt(totFatturato)} • Margine netto: <span style={{color:'var(--green)'}}>{fmt(totMargine)}</span></div>
+        <div className="page-subtitle">
+          {filtered.length} ordini • {fmtG(totGrammi)} • Fatturato: {fmt(totFatturato)} • Ricavo netto: <span style={{color:'var(--green)'}}>{fmt(totMargine)}</span>
+        </div>
       </div>
       <button className="btn btn-primary" onClick={()=>{setSelected(null);setModal('new')}}>+ Nuovo Ordine</button>
     </div>
@@ -545,22 +688,22 @@ function OrdiniPage({ col }) {
         ? <div className="empty-state"><div className="icon">📦</div><p>Nessun ordine trovato</p></div>
         : <div style={{overflowX:'auto'}}>
           <table><thead><tr>
-            <th>#</th><th>Cliente</th><th>Prodotto</th><th>Qtà</th><th>P. Vendita</th><th>P. Costo</th><th>Fatturato</th><th>Margine</th><th>Stato</th><th>Data</th><th></th>
+            <th>#</th><th>Cliente</th><th>Prodotto</th><th>Grammi</th><th>P.Vendita/g</th><th>P.Costo/g</th><th>Fatturato</th><th>Ricavo Netto</th><th>Stato</th><th>Data</th><th></th>
           </tr></thead>
           <tbody>{filtered.map((o,i)=>{
-            const m = margine(o);
-            const tv = totaleVendita(o);
+            const m = calcMargine(o);
+            const tv = calcFatturato(o);
             return (<tr key={o.id}>
               <td><span className="tag mono">{String(i+1).padStart(3,'0')}</span></td>
               <td>
                 <div style={{fontWeight:'600'}}>{o.cliente}</div>
                 {o.telefono&&<div style={{fontSize:'11px',color:'var(--text3)',fontFamily:'var(--mono)'}}>{o.telefono}</div>}
               </td>
-              <td style={{maxWidth:'140px'}}>
+              <td style={{maxWidth:'130px'}}>
                 <div style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{o.prodotto}</div>
                 {o.note&&<div style={{fontSize:'11px',color:'var(--text3)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{o.note}</div>}
               </td>
-              <td className="mono" style={{color:'var(--text2)'}}>{o.qta||1}</td>
+              <td className="mono" style={{color:'var(--accent)'}}>{fmtG(o.qta)}</td>
               <td className="mono">{fmt(o.prezzoVendita)}</td>
               <td className="mono" style={{color:'var(--text2)'}}>{n(o.prezzoCosto)>0?fmt(o.prezzoCosto):'—'}</td>
               <td className="amount-neutral">{fmt(tv)}</td>
@@ -591,7 +734,7 @@ function OrdiniPage({ col }) {
 }
 
 // ─── FINANZA PAGE ─────────────────────────────────────────────────────────
-function FinanzaPage({ col }) {
+function FinanzaPage({ col, orders }) {
   const { data: movimenti, add, update, remove } = col;
   const [modal, setModal] = useState(null);
   const [selected, setSelected] = useState(null);
@@ -599,9 +742,16 @@ function FinanzaPage({ col }) {
   const [filterTipo, setFilterTipo] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const totEntrate = movimenti.filter(m=>m.tipo==='entrata').reduce((s,m)=>s+n(m.importo),0);
-  const totUscite  = movimenti.filter(m=>m.tipo==='uscita').reduce((s,m)=>s+n(m.importo),0);
-  const saldo = totEntrate - totUscite;
+  // Ricavo automatico dagli ordini
+  const ricavoOrdini = orders.reduce((s,o)=>s+calcMargine(o), 0);
+  const costoOrdini  = orders.reduce((s,o)=>s+calcCostoTot(o), 0);
+
+  // Movimenti extra
+  const movEntrate = movimenti.filter(m=>m.tipo==='entrata').reduce((s,m)=>s+n(m.importo),0);
+  const movUscite  = movimenti.filter(m=>m.tipo==='uscita').reduce((s,m)=>s+n(m.importo),0);
+
+  // Saldo totale = ricavo ordini + movimenti entrate - movimenti uscite
+  const saldoTotale = ricavoOrdini + movEntrate - movUscite;
 
   const filtered = useMemo(()=>movimenti.filter(m=>{
     const s=search.toLowerCase();
@@ -613,30 +763,42 @@ function FinanzaPage({ col }) {
 
   return (<div>
     <div className="page-header">
-      <div><div className="page-title">Finanza</div><div className="page-subtitle">Saldo netto: {fmt(saldo)}</div></div>
-      <button className="btn btn-primary" onClick={()=>{setSelected(null);setModal('new')}}>+ Nuovo Movimento</button>
-    </div>
-    <div className="fin-grid">
-      <div className="fin-card" style={{borderColor:'rgba(76,175,130,0.3)'}}>
-        <h3>↘ Entrate Totali</h3>
-        <div style={{fontSize:'30px',fontWeight:'800',color:'var(--green)',marginBottom:'6px',letterSpacing:'-1px'}}>{fmt(totEntrate)}</div>
-        <div style={{fontSize:'11px',color:'var(--text3)',fontFamily:'var(--mono)'}}>{movimenti.filter(m=>m.tipo==='entrata').length} movimenti</div>
+      <div><div className="page-title">Finanza</div>
+        <div className="page-subtitle">Saldo totale: <span style={{color:saldoTotale>=0?'var(--green)':'var(--red)'}}>{fmt(saldoTotale)}</span></div>
       </div>
-      <div className="fin-card" style={{borderColor:'rgba(224,82,82,0.3)'}}>
-        <h3>↗ Uscite Totali</h3>
-        <div style={{fontSize:'30px',fontWeight:'800',color:'var(--red)',marginBottom:'6px',letterSpacing:'-1px'}}>{fmt(totUscite)}</div>
-        <div style={{fontSize:'11px',color:'var(--text3)',fontFamily:'var(--mono)'}}>{movimenti.filter(m=>m.tipo==='uscita').length} movimenti</div>
+      <button className="btn btn-primary" onClick={()=>{setSelected(null);setModal('new')}}>+ Movimento Extra</button>
+    </div>
+
+    {/* KPI finanza */}
+    <div className="kpi-grid" style={{gridTemplateColumns:'repeat(3,1fr)',marginBottom:'20px'}}>
+      <div className="kpi-card green">
+        <div className="kpi-label">Ricavo da Ordini</div>
+        <div className={`kpi-value ${ricavoOrdini>=0?'green':'red'}`}>{fmt(ricavoOrdini)}</div>
+        <div className="kpi-sub">{orders.length} ordini • costo {fmt(costoOrdini)}</div>
+      </div>
+      <div className="kpi-card gold">
+        <div className="kpi-label">Movimenti Extra</div>
+        <div className="kpi-value gold">{fmt(movEntrate - movUscite)}</div>
+        <div className="kpi-sub">+{fmt(movEntrate)} / -{fmt(movUscite)}</div>
+      </div>
+      <div className="kpi-card blue">
+        <div className="kpi-label">Saldo Totale</div>
+        <div className={`kpi-value ${saldoTotale>=0?'green':'red'}`}>{fmt(saldoTotale)}</div>
+        <div className="kpi-sub">{saldoTotale>=0?'✓ in attivo':'✗ in passivo'}</div>
       </div>
     </div>
+
+    {/* Tabella movimenti extra */}
+    <div className="section-title" style={{marginBottom:'12px'}}>Movimenti Manuali Extra <span>separati dal ricavo automatico degli ordini</span></div>
     <div className="table-container">
       <div className="table-toolbar">
-        <div className="search-box"><span style={{color:'var(--text3)'}}>⌕</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Cerca descrizione o categoria..."/></div>
+        <div className="search-box"><span style={{color:'var(--text3)'}}>⌕</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Cerca..."/></div>
         <select className="filter-select" value={filterTipo} onChange={e=>setFilterTipo(e.target.value)}>
           <option value="">Tutti</option><option value="entrata">↘ Entrate</option><option value="uscita">↗ Uscite</option>
         </select>
       </div>
       {filtered.length===0
-        ? <div className="empty-state"><div className="icon">💰</div><p>Nessun movimento trovato</p></div>
+        ? <div className="empty-state"><div className="icon">💰</div><p>Nessun movimento extra registrato</p></div>
         : <div style={{overflowX:'auto'}}>
           <table><thead><tr><th>Tipo</th><th>Descrizione</th><th>Categoria</th><th>Importo</th><th>Data</th><th>Note</th><th></th></tr></thead>
           <tbody>{filtered.map(m=>(
@@ -657,7 +819,7 @@ function FinanzaPage({ col }) {
       }
     </div>
     <Modal open={modal==='new'||modal==='edit'} onClose={()=>setModal(null)}>
-      <MovimentoForm initial={selected} onSave={saveMov} onClose={()=>setModal(null)} title={modal==='new'?'Nuovo Movimento':'Modifica Movimento'} saving={saving}/>
+      <MovimentoForm initial={selected} onSave={saveMov} onClose={()=>setModal(null)} title={modal==='new'?'Nuovo Movimento Extra':'Modifica Movimento'} saving={saving}/>
     </Modal>
     <Modal open={modal==='delete'} onClose={()=>setModal(null)}>
       <h2>Elimina Movimento</h2><div className="modal-sub">Questa azione non può essere annullata</div>
@@ -674,7 +836,7 @@ function FinanzaPage({ col }) {
 function App() {
   const ordersCol    = useFirestoreCollection('ordini');
   const movimentiCol = useFirestoreCollection('movimenti');
-  const [page, setPage]   = useState('dashboard');
+  const [page, setPage]     = useState('dashboard');
   const [online, setOnline] = useState(navigator.onLine);
 
   useEffect(()=>{
@@ -706,23 +868,23 @@ function App() {
         </div>
         <nav className="nav">
           <div className="nav-section">Menu</div>
-          {navItems.map(n=>(
-            <div key={n.id} className={`nav-item${page===n.id?' active':''}`} onClick={()=>setPage(n.id)}>
-              <span className="icon">{n.icon}</span>{n.label}
-              {n.badge?<span className="nav-badge">{n.badge}</span>:null}
+          {navItems.map(item=>(
+            <div key={item.id} className={`nav-item${page===item.id?' active':''}`} onClick={()=>setPage(item.id)}>
+              <span className="icon">{item.icon}</span>{item.label}
+              {item.badge?<span className="nav-badge">{item.badge}</span>:null}
             </div>
           ))}
         </nav>
         <div className="sidebar-footer">
-          <div className="label">Ordini Totali</div>
-          <div className="value">{ordersCol.data.length}</div>
+          <div className="sf-label">Ordini Totali</div>
+          <div className="sf-value">{ordersCol.data.length}</div>
           <div className={`live-badge ${online?'on':'off'}`}>{online?'● FIREBASE LIVE':'● OFFLINE'}</div>
         </div>
       </aside>
       <main className="main">
         {page==='dashboard' && <Dashboard orders={ordersCol.data} movimenti={movimentiCol.data}/>}
         {page==='ordini'    && <OrdiniPage col={ordersCol}/>}
-        {page==='finanza'   && <FinanzaPage col={movimentiCol}/>}
+        {page==='finanza'   && <FinanzaPage col={movimentiCol} orders={ordersCol.data}/>}
       </main>
     </div>
   );
