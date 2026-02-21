@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestionale Ordini</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #1a1a24;
+    --card: #14141e;
+    --border: #252535;
+    --accent: #c9a84c;
+    --accent2: #e8c96a;
+    --green: #4caf82;
+    --red: #e05252;
+    --blue: #4c7dcf;
+    --purple: #8b5cf6;
+    --text: #e8e8f0;
+    --text2: #9090a8;
+    --text3: #60607a;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  .layout { display: flex; height: 100vh; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 240px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 28px 0;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .sidebar::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+    opacity: 0.3;
+  }
+
+  .logo {
+    padding: 0 24px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-mark {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .logo h1 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+  }
+  .logo h1 span { color: var(--accent); }
+
+  .nav { padding: 20px 16px; flex: 1; }
+  .nav-section {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--text3);
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+    padding: 0 8px;
+    margin: 16px 0 8px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text2);
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid transparent;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active {
+    background: rgba(201,168,76,0.12);
+    color: var(--accent);
+    border-color: rgba(201,168,76,0.2);
+  }
+  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Main content */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 36px;
+    background: var(--bg);
+  }
+  .main::-webkit-scrollbar { width: 6px; }
+  .main::-webkit-scrollbar-track { background: transparent; }
+  .main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+  .page-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+  }
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--text2);
+    margin-top: 6px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(201,168,76,0.3); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: var(--bg3); color: var(--text); }
+  .btn-danger { background: rgba(224,82,82,0.15); color: var(--red); border: 1px solid rgba(224,82,82,0.3); }
+  .btn-danger:hover { background: rgba(224,82,82,0.25); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+  /* KPI Cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .kpi-card:hover { border-color: var(--accent); }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .kpi-card.gold::before { background: linear-gradient(90deg, var(--accent), transparent); }
+  .kpi-card.green::before { background: linear-gradient(90deg, var(--green), transparent); }
+  .kpi-card.red::before { background: linear-gradient(90deg, var(--red), transparent); }
+  .kpi-card.blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
+
+  .kpi-label {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 12px;
+  }
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .kpi-value.gold { color: var(--accent); }
+  .kpi-value.green { color: var(--green); }
+  .kpi-value.red { color: var(--red); }
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+  .kpi-icon {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    font-size: 28px;
+    opacity: 0.12;
+  }
+
+  /* Table */
+  .table-container {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .table-toolbar {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    flex: 1;
+    min-width: 200px;
+  }
+  .search-box input {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    outline: none;
+    width: 100%;
+  }
+  .search-box input::placeholder { color: var(--text3); }
+
+  .filter-select {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    outline: none;
+    cursor: pointer;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  td {
+    padding: 14px 20px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(37,37,53,0.6);
+    color: var(--text);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-family: 'DM Mono', monospace;
+    white-space: nowrap;
+  }
+  .status-badge::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+  .s-nuovo { background: rgba(76,125,207,0.15); color: var(--blue); }
+  .s-lavorazione { background: rgba(201,168,76,0.15); color: var(--accent); }
+  .s-spedito { background: rgba(139,92,246,0.15); color: var(--purple); }
+  .s-consegnato { background: rgba(76,175,130,0.15); color: var(--green); }
+  .s-annullato { background: rgba(224,82,82,0.15); color: var(--red); }
+
+  .amount-pos { color: var(--green); font-family: 'DM Mono', monospace; font-weight: 500; }
+  .amount-neg { color: var(--red); font-family: 'DM Mono', monospace; font-weight: 500; }
+  .amount-neu { color: var(--text); font-family: 'DM Mono', monospace; font-weight: 500; }
+
+  .action-btns { display: flex; gap: 6px; }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: fadeIn 0.15s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 540px;
+    animation: slideUp 0.2s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .modal-sub {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 28px;
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1/-1; }
+  .form-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+  .form-input, .form-select, .form-textarea {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--accent);
+  }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Finanza cards */
+  .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .fin-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .fin-card h3 {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 16px;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text3);
+  }
+  .empty-state .icon { font-size: 40px; margin-bottom: 16px; opacity: 0.5; }
+  .empty-state p { font-size: 14px; }
+
+  /* Mini chart bar */
+  .mini-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .mini-bar-label { font-size: 11px; color: var(--text2); font-family: 'DM Mono', monospace; width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mini-bar-track { flex: 1; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .mini-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+  .mini-bar-val { font-size: 11px; color: var(--text2); font-family: 'DM Mono', monospace; width: 60px; text-align: right; }
+
+  /* Scrollbar for modal */
+  .modal::-webkit-scrollbar { width: 4px; }
+  .modal::-webkit-scrollbar-track { background: transparent; }
+  .modal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .tag {
+    display: inline-block;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--text2);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .sidebar { width: 200px; }
+    .main { padding: 20px; }
+  }
+  @media (max-width: 640px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .fin-grid { grid-template-columns: 1fr; }
+    .layout { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+  .text-mono { font-family: 'DM Mono', monospace; }
+
+  /* Confirm delete */
+  .confirm-box {
+    background: rgba(224,82,82,0.08);
+    border: 1px solid rgba(224,82,82,0.2);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .confirm-box p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+  .confirm-box strong { color: var(--red); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useMemo, useCallback } = React;
+
+// ─── STORAGE ─────────────────────────────────────────────────────────────────
+const KEYS = { orders: 'gestionale_orders', movimenti: 'gestionale_movimenti' };
+
+function useLocalStorage(key, initial) {
+  const [val, setVal] = useState(() => {
+    try {
+      const s = localStorage.getItem(key);
+      return s ? JSON.parse(s) : initial;
+    } catch { return initial; }
+  });
+  const set = useCallback(v => {
+    setVal(prev => {
+      const next = typeof v === 'function' ? v(prev) : v;
+      try { localStorage.setItem(key, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, [key]);
+  return [val, set];
+}
+
+// ─── ICONS ───────────────────────────────────────────────────────────────────
+const Icon = ({ name }) => {
+  const icons = {
+    dashboard: '◈', orders: '📋', finance: '💰', settings: '⚙',
+    plus: '+', search: '⌕', edit: '✎', trash: '⌫', close: '×',
+    euro: '€', arrow_up: '↑', arrow_down: '↓', check: '✓',
+    package: '📦', income: '↘', expense: '↗'
+  };
+  return <span>{icons[name] || '·'}</span>;
+};
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const fmt = n => `€ ${parseFloat(n || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+const fmtDate = d => d ? new Date(d).toLocaleDateString('it-IT') : '—';
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+
+const STATUS_MAP = {
+  nuovo: { label: 'Nuovo', cls: 's-nuovo' },
+  lavorazione: { label: 'In Lavorazione', cls: 's-lavorazione' },
+  spedito: { label: 'Spedito', cls: 's-spedito' },
+  consegnato: { label: 'Consegnato', cls: 's-consegnato' },
+  annullato: { label: 'Annullato', cls: 's-annullato' },
+};
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function Modal({ open, onClose, children }) {
+  if (!open) return null;
+  return (
+    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="modal">{children}</div>
+    </div>
+  );
+}
+
+// ─── ORDER FORM ──────────────────────────────────────────────────────────────
+const defaultOrder = { cliente: '', prodotto: '', qta: '', prezzo: '', stato: 'nuovo', data: '', note: '', telefono: '', indirizzo: '' };
+
+function OrderForm({ initial, onSave, onClose, title }) {
+  const [f, setF] = useState(initial || { ...defaultOrder, data: new Date().toISOString().split('T')[0] });
+  const set = k => e => setF(p => ({ ...p, [k]: e.target.value }));
+  const save = () => {
+    if (!f.cliente || !f.prodotto) return alert('Cliente e Prodotto sono obbligatori');
+    onSave(f);
+  };
+  return (
+    <>
+      <h2>{title || 'Nuovo Ordine'}</h2>
+      <div className="modal-sub">Compila i dati dell'ordine</div>
+      <div className="form-grid">
+        <div className="form-group">
+          <label className="form-label">Cliente *</label>
+          <input className="form-input" value={f.cliente} onChange={set('cliente')} placeholder="Nome cliente" />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Telefono</label>
+          <input className="form-input" value={f.telefono} onChange={set('telefono')} placeholder="es. 333 1234567" />
+        </div>
+        <div className="form-group full">
+          <label className="form-label">Prodotto / Descrizione *</label>
+          <input className="form-input" value={f.prodotto} onChange={set('prodotto')} placeholder="Descrizione prodotto/servizio" />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Quantità</label>
+          <input className="form-input" type="number" value={f.qta} onChange={set('qta')} placeholder="1" min="1" />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Prezzo (€)</label>
+          <input className="form-input" type="number" step="0.01" value={f.prezzo} onChange={set('prezzo')} placeholder="0.00" />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Stato</label>
+          <select className="form-select" value={f.stato} onChange={set('stato')}>
+            {Object.entries(STATUS_MAP).map(([k,v]) => <option key={k} value={k}>{v.label}</option>)}
+          </select>
+        </div>
+        <div className="form-group">
+          <label className="form-label">Data</label>
+          <input className="form-input" type="date" value={f.data} onChange={set('data')} />
+        </div>
+        <div className="form-group full">
+          <label className="form-label">Indirizzo di Spedizione</label>
+          <input className="form-input" value={f.indirizzo} onChange={set('indirizzo')} placeholder="Via, Città, CAP" />
+        </div>
+        <div className="form-group full">
+          <label className="form-label">Note</label>
+          <textarea className="form-textarea" value={f.note} onChange={set('note')} placeholder="Note aggiuntive..." />
+        </div>
+      </div>
+      <div className="form-actions">
+        <button className="btn btn-ghost" onClick={onClose}>Annulla</button>
+        <button className="btn btn-primary" onClick={save}>💾 Salva Ordine</button>
+      </div>
+    </>
+  );
+}
+
+// ─── MOVIMENTO FORM ──────────────────────────────────────────────────────────
+const defaultMov = { tipo: 'entrata', categoria: '', descrizione: '', importo: '', data: '', note: '' };
+
+function MovimentoForm({ initial, onSave, onClose, title }) {
+  const [f, setF] = useState(initial || { ...defaultMov, data: new Date().toISOString().split('T')[0] });
+  const set = k => e => setF(p => ({ ...p, [k]: e.target.value }));
+  const save = () => {
+    if (!f.descrizione || !f.importo) return alert('Descrizione e Importo sono obbligatori');
+    onSave(f);
+  };
+  const catEntrate = ['Vendita', 'Servizi', 'Consulenza', 'Rimborso', 'Altro'];
+  const catUscite = ['Fornitore', 'Spedizione', 'Materiali', 'Utenze', 'Tasse', 'Software', 'Altro'];
+  const cats = f.tipo === 'entrata' ? catEntrate : catUscite;
+  return (
+    <>
+      <h2>{title || 'Nuovo Movimento'}</h2>
+      <div className="modal-sub">Registra entrata o uscita</div>
+      <div className="form-grid">
+        <div className="form-group">
+          <label className="form-label">Tipo</label>
+          <select className="form-select" value={f.tipo} onChange={set('tipo')}>
+            <option value="entrata">↘ Entrata</option>
+            <option value="uscita">↗ Uscita</option>
+          </select>
+        </div>
+        <div className="form-group">
+          <label className="form-label">Categoria</label>
+          <select className="form-select" value={f.categoria} onChange={set('categoria')}>
+            <option value="">Seleziona...</option>
+            {cats.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+        <div className="form-group full">
+          <label className="form-label">Descrizione *</label>
+          <input className="form-input" value={f.descrizione} onChange={set('descrizione')} placeholder="Descrizione del movimento" />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Importo (€) *</label>
+          <input className="form-input" type="number" step="0.01" value={f.importo} onChange={set('importo')} placeholder="0.00" />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Data</label>
+          <input className="form-input" type="date" value={f.data} onChange={set('data')} />
+        </div>
+        <div className="form-group full">
+          <label className="form-label">Note</label>
+          <textarea className="form-textarea" value={f.note} onChange={set('note')} placeholder="Note aggiuntive..." />
+        </div>
+      </div>
+      <div className="form-actions">
+        <button className="btn btn-ghost" onClick={onClose}>Annulla</button>
+        <button className="btn btn-primary" onClick={save}>💾 Salva</button>
+      </div>
+    </>
+  );
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────────────────────────
+function Dashboard({ orders, movimenti }) {
+  const totOrdini = orders.length;
+  const totAttivi = orders.filter(o => !['consegnato','annullato'].includes(o.stato)).length;
+  const totEntrate = movimenti.filter(m => m.tipo === 'entrata').reduce((s,m) => s + parseFloat(m.importo||0), 0);
+  const totUscite = movimenti.filter(m => m.tipo === 'uscita').reduce((s,m) => s + parseFloat(m.importo||0), 0);
+  const saldo = totEntrate - totUscite;
+
+  // Revenue from orders (consegnati)
+  const revOrdini = orders.filter(o=>o.stato==='consegnato').reduce((s,o)=>s+parseFloat(o.prezzo||0)*parseFloat(o.qta||1),0);
+
+  // Recent orders
+  const recent = [...orders].sort((a,b) => new Date(b.data||0)-new Date(a.data||0)).slice(0,5);
+
+  // Status counts
+  const statusCount = {};
+  orders.forEach(o => { statusCount[o.stato] = (statusCount[o.stato]||0)+1; });
+
+  // Top clients
+  const clienti = {};
+  orders.forEach(o => { if(o.cliente) clienti[o.cliente] = (clienti[o.cliente]||0)+parseFloat(o.prezzo||0)*parseFloat(o.qta||1); });
+  const topClienti = Object.entries(clienti).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxVal = topClienti[0]?.[1] || 1;
+
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <div className="page-title">Dashboard</div>
+          <div className="page-subtitle">Panoramica generale • {new Date().toLocaleDateString('it-IT', {weekday:'long', year:'numeric', month:'long', day:'numeric'})}</div>
+        </div>
+      </div>
+
+      <div className="kpi-grid">
+        <div className="kpi-card gold">
+          <div className="kpi-icon">📋</div>
+          <div className="kpi-label">Totale Ordini</div>
+          <div className="kpi-value gold">{totOrdini}</div>
+          <div className="kpi-sub">{totAttivi} attivi</div>
+        </div>
+        <div className="kpi-card green">
+          <div className="kpi-icon">💰</div>
+          <div className="kpi-label">Entrate</div>
+          <div className="kpi-value green">{fmt(totEntrate)}</div>
+          <div className="kpi-sub">totale registrato</div>
+        </div>
+        <div className="kpi-card red">
+          <div className="kpi-icon">📤</div>
+          <div className="kpi-label">Uscite</div>
+          <div className="kpi-value red">{fmt(totUscite)}</div>
+          <div className="kpi-sub">totale spese</div>
+        </div>
+        <div className="kpi-card blue">
+          <div className="kpi-icon">⚖</div>
+          <div className="kpi-label">Saldo Netto</div>
+          <div className={`kpi-value ${saldo>=0?'green':'red'}`}>{fmt(saldo)}</div>
+          <div className="kpi-sub">{saldo>=0?'in attivo':'in passivo'}</div>
+        </div>
+      </div>
+
+      <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'16px', marginBottom:'16px'}}>
+        {/* Ordini recenti */}
+        <div className="table-container">
+          <div className="table-toolbar" style={{justifyContent:'space-between'}}>
+            <span style={{fontSize:'13px', fontWeight:'700'}}>Ordini Recenti</span>
+            <span className="tag">ultime 5</span>
+          </div>
+          {recent.length === 0 ? (
+            <div className="empty-state"><div className="icon">📦</div><p>Nessun ordine ancora</p></div>
+          ) : (
+            <table>
+              <thead><tr>
+                <th>Cliente</th><th>Prodotto</th><th>Totale</th><th>Stato</th>
+              </tr></thead>
+              <tbody>
+                {recent.map(o => (
+                  <tr key={o.id}>
+                    <td style={{fontWeight:'600'}}>{o.cliente}</td>
+                    <td style={{color:'var(--text2)', maxWidth:'120px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{o.prodotto}</td>
+                    <td className="amount-pos">{fmt(parseFloat(o.prezzo||0)*parseFloat(o.qta||1))}</td>
+                    <td><span className={`status-badge ${STATUS_MAP[o.stato]?.cls}`}>{STATUS_MAP[o.stato]?.label}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {/* Top clienti */}
+        <div className="fin-card" style={{padding:'20px'}}>
+          <h3>Top Clienti per Valore</h3>
+          {topClienti.length === 0 ? (
+            <div style={{color:'var(--text3)', fontSize:'13px', textAlign:'center', padding:'20px'}}>Nessun dato</div>
+          ) : topClienti.map(([name, val]) => (
+            <div key={name} className="mini-bar-row">
+              <div className="mini-bar-label">{name}</div>
+              <div className="mini-bar-track">
+                <div className="mini-bar-fill" style={{width:`${(val/maxVal)*100}%`, background:'var(--accent)'}}></div>
+              </div>
+              <div className="mini-bar-val">{fmt(val)}</div>
+            </div>
+          ))}
+          {topClienti.length > 0 && (
+            <div style={{marginTop:'16px'}}>
+              <div className="divider"></div>
+              <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'8px'}}>
+                {Object.entries(STATUS_MAP).map(([k,v]) => (
+                  <div key={k} style={{textAlign:'center'}}>
+                    <div style={{fontSize:'20px', fontWeight:'800', color: k==='consegnato'?'var(--green)':k==='annullato'?'var(--red)':'var(--text)'}}>{statusCount[k]||0}</div>
+                    <div style={{fontSize:'9px', color:'var(--text3)', fontFamily:'DM Mono, monospace', letterSpacing:'1px', textTransform:'uppercase'}}>{v.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── ORDINI PAGE ─────────────────────────────────────────────────────────────
+function OrdiniPage({ orders, setOrders }) {
+  const [modal, setModal] = useState(null); // null | 'new' | 'edit' | 'delete'
+  const [selected, setSelected] = useState(null);
+  const [search, setSearch] = useState('');
+  const [filterStato, setFilterStato] = useState('');
+
+  const filtered = useMemo(() => {
+    return orders.filter(o => {
+      const s = search.toLowerCase();
+      const matchSearch = !s || o.cliente?.toLowerCase().includes(s) || o.prodotto?.toLowerCase().includes(s);
+      const matchStato = !filterStato || o.stato === filterStato;
+      return matchSearch && matchStato;
+    }).sort((a,b) => new Date(b.data||0) - new Date(a.data||0));
+  }, [orders, search, filterStato]);
+
+  const openNew = () => { setSelected(null); setModal('new'); };
+  const openEdit = o => { setSelected(o); setModal('edit'); };
+  const openDelete = o => { setSelected(o); setModal('delete'); };
+
+  const saveOrder = f => {
+    if (modal === 'new') {
+      setOrders(p => [{ ...f, id: uid() }, ...p]);
+    } else {
+      setOrders(p => p.map(o => o.id === selected.id ? { ...f, id: o.id } : o));
+    }
+    setModal(null);
+  };
+
+  const deleteOrder = () => {
+    setOrders(p => p.filter(o => o.id !== selected.id));
+    setModal(null);
+  };
+
+  const totale = filtered.reduce((s,o) => s + parseFloat(o.prezzo||0)*parseFloat(o.qta||1), 0);
+
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <div className="page-title">Ordini</div>
+          <div className="page-subtitle">{filtered.length} ordini • Totale: {fmt(totale)}</div>
+        </div>
+        <button className="btn btn-primary" onClick={openNew}>+ Nuovo Ordine</button>
+      </div>
+
+      <div className="table-container">
+        <div className="table-toolbar">
+          <div className="search-box">
+            <span style={{color:'var(--text3)'}}>⌕</span>
+            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Cerca cliente o prodotto..." />
+          </div>
+          <select className="filter-select" value={filterStato} onChange={e=>setFilterStato(e.target.value)}>
+            <option value="">Tutti gli stati</option>
+            {Object.entries(STATUS_MAP).map(([k,v]) => <option key={k} value={k}>{v.label}</option>)}
+          </select>
+        </div>
+
+        {filtered.length === 0 ? (
+          <div className="empty-state">
+            <div className="icon">📦</div>
+            <p>Nessun ordine trovato</p>
+          </div>
+        ) : (
+          <table>
+            <thead><tr>
+              <th>#</th><th>Cliente</th><th>Prodotto</th><th>Qtà</th><th>Prezzo Unit.</th><th>Totale</th><th>Stato</th><th>Data</th><th>Azioni</th>
+            </tr></thead>
+            <tbody>
+              {filtered.map((o, i) => (
+                <tr key={o.id}>
+                  <td><span className="tag text-mono">{String(i+1).padStart(3,'0')}</span></td>
+                  <td>
+                    <div style={{fontWeight:'600'}}>{o.cliente}</div>
+                    {o.telefono && <div style={{fontSize:'11px', color:'var(--text3)', fontFamily:'DM Mono, monospace'}}>{o.telefono}</div>}
+                  </td>
+                  <td style={{maxWidth:'160px'}}>
+                    <div style={{overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{o.prodotto}</div>
+                    {o.note && <div style={{fontSize:'11px', color:'var(--text3)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:'140px'}}>{o.note}</div>}
+                  </td>
+                  <td className="text-mono" style={{color:'var(--text2)'}}>{o.qta||1}</td>
+                  <td className="text-mono">{fmt(o.prezzo)}</td>
+                  <td className="amount-pos">{fmt(parseFloat(o.prezzo||0)*parseFloat(o.qta||1))}</td>
+                  <td><span className={`status-badge ${STATUS_MAP[o.stato]?.cls}`}>{STATUS_MAP[o.stato]?.label}</span></td>
+                  <td className="text-mono" style={{color:'var(--text3)', fontSize:'12px'}}>{fmtDate(o.data)}</td>
+                  <td>
+                    <div className="action-btns">
+                      <button className="btn btn-ghost btn-sm" onClick={()=>openEdit(o)} title="Modifica">✎</button>
+                      <button className="btn btn-danger btn-sm" onClick={()=>openDelete(o)} title="Elimina">⌫</button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      <Modal open={modal==='new'||modal==='edit'} onClose={()=>setModal(null)}>
+        <OrderForm initial={selected} onSave={saveOrder} onClose={()=>setModal(null)} title={modal==='new'?'Nuovo Ordine':'Modifica Ordine'} />
+      </Modal>
+
+      <Modal open={modal==='delete'} onClose={()=>setModal(null)}>
+        <h2>Elimina Ordine</h2>
+        <div className="modal-sub">Questa azione non può essere annullata</div>
+        <div className="confirm-box">
+          <p>Stai per eliminare l'ordine di <strong>{selected?.cliente}</strong> per <strong>{selected?.prodotto}</strong>.<br/>Sei sicuro?</p>
+        </div>
+        <div className="form-actions">
+          <button className="btn btn-ghost" onClick={()=>setModal(null)}>Annulla</button>
+          <button className="btn btn-danger" onClick={deleteOrder}>⌫ Elimina</button>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
+// ─── FINANZA PAGE ─────────────────────────────────────────────────────────────
+function FinanzaPage({ movimenti, setMovimenti }) {
+  const [modal, setModal] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [search, setSearch] = useState('');
+  const [filterTipo, setFilterTipo] = useState('');
+
+  const totEntrate = movimenti.filter(m=>m.tipo==='entrata').reduce((s,m)=>s+parseFloat(m.importo||0),0);
+  const totUscite = movimenti.filter(m=>m.tipo==='uscita').reduce((s,m)=>s+parseFloat(m.importo||0),0);
+  const saldo = totEntrate - totUscite;
+
+  // Cat breakdown
+  const catData = {};
+  movimenti.forEach(m => {
+    const k = `${m.tipo}::${m.categoria||'Altro'}`;
+    catData[k] = (catData[k]||0) + parseFloat(m.importo||0);
+  });
+
+  const filtered = useMemo(() => {
+    return movimenti.filter(m => {
+      const s = search.toLowerCase();
+      const match = !s || m.descrizione?.toLowerCase().includes(s) || m.categoria?.toLowerCase().includes(s);
+      const tipo = !filterTipo || m.tipo === filterTipo;
+      return match && tipo;
+    }).sort((a,b)=>new Date(b.data||0)-new Date(a.data||0));
+  }, [movimenti, search, filterTipo]);
+
+  const saveMov = f => {
+    if (modal === 'new') setMovimenti(p => [{ ...f, id: uid() }, ...p]);
+    else setMovimenti(p => p.map(m => m.id === selected.id ? { ...f, id: m.id } : m));
+    setModal(null);
+  };
+
+  const deleteMov = () => { setMovimenti(p=>p.filter(m=>m.id!==selected.id)); setModal(null); };
+
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <div className="page-title">Finanza</div>
+          <div className="page-subtitle">Entrate & Uscite • Saldo: {fmt(saldo)}</div>
+        </div>
+        <button className="btn btn-primary" onClick={()=>{setSelected(null);setModal('new')}}>+ Nuovo Movimento</button>
+      </div>
+
+      <div className="fin-grid">
+        <div className="fin-card" style={{borderColor:'rgba(76,175,130,0.3)'}}>
+          <h3>↘ Entrate Totali</h3>
+          <div style={{fontSize:'32px', fontWeight:'800', color:'var(--green)', marginBottom:'8px'}}>{fmt(totEntrate)}</div>
+          <div style={{fontSize:'12px', color:'var(--text3)', fontFamily:'DM Mono, monospace'}}>{movimenti.filter(m=>m.tipo==='entrata').length} movimenti</div>
+        </div>
+        <div className="fin-card" style={{borderColor:'rgba(224,82,82,0.3)'}}>
+          <h3>↗ Uscite Totali</h3>
+          <div style={{fontSize:'32px', fontWeight:'800', color:'var(--red)', marginBottom:'8px'}}>{fmt(totUscite)}</div>
+          <div style={{fontSize:'12px', color:'var(--text3)', fontFamily:'DM Mono, monospace'}}>{movimenti.filter(m=>m.tipo==='uscita').length} movimenti</div>
+        </div>
+      </div>
+
+      <div className="table-container">
+        <div className="table-toolbar">
+          <div className="search-box">
+            <span style={{color:'var(--text3)'}}>⌕</span>
+            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Cerca descrizione o categoria..." />
+          </div>
+          <select className="filter-select" value={filterTipo} onChange={e=>setFilterTipo(e.target.value)}>
+            <option value="">Tutti</option>
+            <option value="entrata">↘ Entrate</option>
+            <option value="uscita">↗ Uscite</option>
+          </select>
+        </div>
+
+        {filtered.length === 0 ? (
+          <div className="empty-state">
+            <div className="icon">💰</div>
+            <p>Nessun movimento trovato</p>
+          </div>
+        ) : (
+          <table>
+            <thead><tr>
+              <th>Tipo</th><th>Descrizione</th><th>Categoria</th><th>Importo</th><th>Data</th><th>Note</th><th>Azioni</th>
+            </tr></thead>
+            <tbody>
+              {filtered.map(m => (
+                <tr key={m.id}>
+                  <td>
+                    {m.tipo==='entrata'
+                      ? <span className="status-badge s-consegnato">↘ Entrata</span>
+                      : <span className="status-badge s-annullato">↗ Uscita</span>}
+                  </td>
+                  <td style={{fontWeight:'500'}}>{m.descrizione}</td>
+                  <td>{m.categoria && <span className="tag">{m.categoria}</span>}</td>
+                  <td className={m.tipo==='entrata'?'amount-pos':'amount-neg'}>
+                    {m.tipo==='entrata'?'+':'-'}{fmt(m.importo)}
+                  </td>
+                  <td className="text-mono" style={{color:'var(--text3)', fontSize:'12px'}}>{fmtDate(m.data)}</td>
+                  <td style={{color:'var(--text3)', fontSize:'12px', maxWidth:'120px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{m.note||'—'}</td>
+                  <td>
+                    <div className="action-btns">
+                      <button className="btn btn-ghost btn-sm" onClick={()=>{setSelected(m);setModal('edit')}} title="Modifica">✎</button>
+                      <button className="btn btn-danger btn-sm" onClick={()=>{setSelected(m);setModal('delete')}} title="Elimina">⌫</button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      <Modal open={modal==='new'||modal==='edit'} onClose={()=>setModal(null)}>
+        <MovimentoForm initial={selected} onSave={saveMov} onClose={()=>setModal(null)} title={modal==='new'?'Nuovo Movimento':'Modifica Movimento'} />
+      </Modal>
+
+      <Modal open={modal==='delete'} onClose={()=>setModal(null)}>
+        <h2>Elimina Movimento</h2>
+        <div className="modal-sub">Questa azione non può essere annullata</div>
+        <div className="confirm-box">
+          <p>Stai per eliminare: <strong>{selected?.descrizione}</strong> — {fmt(selected?.importo)}</p>
+        </div>
+        <div className="form-actions">
+          <button className="btn btn-ghost" onClick={()=>setModal(null)}>Annulla</button>
+          <button className="btn btn-danger" onClick={deleteMov}>⌫ Elimina</button>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
+// ─── APP ROOT ─────────────────────────────────────────────────────────────────
+function App() {
+  const [orders, setOrders] = useLocalStorage(KEYS.orders, []);
+  const [movimenti, setMovimenti] = useLocalStorage(KEYS.movimenti, []);
+  const [page, setPage] = useState('dashboard');
+
+  const navItems = [
+    { id: 'dashboard', icon: '◈', label: 'Dashboard' },
+    { id: 'ordini', icon: '📋', label: 'Ordini', badge: orders.filter(o=>!['consegnato','annullato'].includes(o.stato)).length || null },
+    { id: 'finanza', icon: '💰', label: 'Finanza' },
+  ];
+
+  return (
+    <div className="layout">
+      <aside className="sidebar">
+        <div className="logo">
+          <div className="logo-mark">Sistema</div>
+          <h1>Gestionale<span>.</span></h1>
+        </div>
+        <nav className="nav">
+          <div className="nav-section">Menu</div>
+          {navItems.map(n => (
+            <div key={n.id} className={`nav-item ${page===n.id?'active':''}`} onClick={()=>setPage(n.id)}>
+              <span className="icon">{n.icon}</span>
+              {n.label}
+              {n.badge ? <span className="nav-badge">{n.badge}</span> : null}
+            </div>
+          ))}
+        </nav>
+        <div style={{padding:'16px 24px', borderTop:'1px solid var(--border)'}}>
+          <div style={{fontSize:'10px', color:'var(--text3)', fontFamily:'DM Mono, monospace', letterSpacing:'1px', lineHeight:'1.6'}}>
+            ORDINI TOTALI<br/>
+            <span style={{color:'var(--accent)', fontSize:'16px', fontWeight:'700'}}>{orders.length}</span>
+          </div>
+        </div>
+      </aside>
+
+      <main className="main">
+        {page === 'dashboard' && <Dashboard orders={orders} movimenti={movimenti} />}
+        {page === 'ordini' && <OrdiniPage orders={orders} setOrders={setOrders} />}
+        {page === 'finanza' && <FinanzaPage movimenti={movimenti} setMovimenti={setMovimenti} />}
+      </main>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
